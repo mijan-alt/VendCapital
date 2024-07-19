@@ -7,6 +7,12 @@ const nextConfig = {
   },
   images: {
     domains: ['utfs.io']
+  },
+  webpack: (config) => {
+    config.experiments = {
+      topLevelAwait: true,
+      layers: true
+    };
   }
 };
 

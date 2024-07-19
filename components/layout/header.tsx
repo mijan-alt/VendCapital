@@ -9,7 +9,15 @@ export default function Header() {
     <div className="supports-backdrop-blur:bg-background/60 fixed left-0 right-0 top-0 z-20 border-b bg-background/95 backdrop-blur">
       <nav className="flex h-14 items-center justify-between px-4">
         <div className="hidden lg:block">
-          <Link
+          <Link href={'/dashboard'} target="_blank">
+            <img
+              src="assets/images/business.png"
+              alt="logo"
+              className="mr-2 h-[56px]"
+            />
+          </Link>
+
+          {/* <Link
             href={'https://github.com/Kiranism/next-shadcn-dashboard-starter'}
             target="_blank"
           >
@@ -25,7 +33,7 @@ export default function Header() {
             >
               <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
             </svg>
-          </Link>
+          </Link> */}
         </div>
         <div className={cn('block lg:!hidden')}>
           <MobileSidebar />

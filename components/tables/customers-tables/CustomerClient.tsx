@@ -3,36 +3,42 @@ import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
-import { User } from '@/constants/data';
+import { Customer } from '@/constants/data';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { columns } from './columns';
-import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+import { Actions } from '@/constants/data';
 
-export const UserClient = () => {
-  const { data: session } = useSession();
-  const router = useRouter();
-  const [users, setUsers] = useState<User[]>([]);
+// interface CustomerClientProps {
+//   data: Customer[];
+// }
+
+export const CustomerClient = () => {
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const perPage = 5;
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const router = useRouter();
 
-  console.log(session, 'session in client.tsx');
-
-  const fetchUsers = async () => {
+  const fetchCustomers = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`/api/users?page=${page}&perPage=${perPage}`);
+      const res = await axios.get(
+        `/api/customers?page=${page}&perPage=${perPage}`
+      );
       if (res.status === 200) {
-        const usersWithId = res.data.user.map((user: User, index: number) => ({
-          ...user,
-          id: index
-        }));
-        setUsers(usersWithId);
+        console.log('response data', res.data);
+        const customersWithId = res.data.customer.map(
+          (customer: Customer, index: number) => ({
+            ...customer,
+            id: index
+          })
+        );
+        setCustomers(customersWithId);
         setTotalPage(res.data.totalPages);
         setCount(res.data.count);
         setLoading(false);
@@ -44,12 +50,12 @@ export const UserClient = () => {
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchCustomers();
   }, []);
 
   useEffect(() => {
     console.log('this effect is running');
-    fetchUsers();
+    fetchCustomers();
   }, [page]);
 
   const nextPage = () => {
@@ -65,24 +71,24 @@ export const UserClient = () => {
     }
   };
 
-  console.log('my users', users);
-
   return (
     <>
       <div className="flex items-start justify-between">
-        <Heading title={`Manage Administrators`} description="" />
+        <Heading title={`Customers`} description="" />
         <Button
           className="text-xs md:text-sm"
-          onClick={() => router.push(`/dashboard/user/new`)}
+          onClick={() => router.push(`/dashboard/customers/new`)}
         >
-          <Plus className="mr-2 h-4 w-4" /> Add Admin
+          <Plus className="mr-2 h-4 w-4" />
+          Add customer
         </Button>
       </div>
       <Separator />
+
       <DataTable
         searchKey="name"
         columns={columns}
-        data={users}
+        data={customers}
         previousPage={previousPage}
         nextPage={nextPage}
         totalPage={totalPage}

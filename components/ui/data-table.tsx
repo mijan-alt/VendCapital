@@ -24,12 +24,24 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   searchKey: string;
+  previousPage: () => void;
+  nextPage: () => void;
+  totalPage: number;
+  count: number;
+  page: number;
+  loading: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  searchKey
+  searchKey,
+  previousPage,
+  nextPage,
+  totalPage,
+  count,
+  page,
+  loading
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -55,7 +67,7 @@ export function DataTable<TData, TValue>({
         <Table className="relative">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup._id}>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
@@ -72,7 +84,7 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {!loading ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -94,7 +106,54 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <tr key={index} className="animate-pulse">
+                      <td className="py-3 ps-4">
+                        <div className="flex h-5 items-center">
+                          <div className="h-4 w-4 rounded bg-gray-200 dark:bg-gray-700"></div>
+                        </div>
+                      </td>
+                      <td className="size-px whitespace-nowrap">
+                        <div className="px-6 py-2">
+                          <div className="block h-4 w-24 rounded bg-gray-200 dark:bg-gray-700"></div>
+                        </div>
+                      </td>
+                      <td className="size-px whitespace-nowrap">
+                        <div className="px-6 py-2">
+                          <div className="block h-4 w-24 rounded bg-gray-200 dark:bg-gray-700"></div>
+                        </div>
+                      </td>
+                      <td className="h-px w-72 min-w-72">
+                        <div className="px-6 py-2">
+                          <p className="line-clamp-2 w-full rounded bg-gray-200 text-sm text-gray-500 dark:bg-gray-700"></p>
+                        </div>
+                      </td>
+                      <td className="size-px whitespace-nowrap">
+                        <div className="px-6 py-2">
+                          <span className="inline-flex items-center gap-1.5 rounded-lg bg-gray-200 px-2 py-1 text-xs font-medium dark:bg-gray-700"></span>
+                        </div>
+                      </td>
+                      <td className="size-px whitespace-nowrap">
+                        <div className="px-6 py-3">
+                          <span className="inline-flex items-center gap-x-1 rounded-full bg-gray-200 px-1.5 py-1 text-xs font-medium dark:bg-gray-700"></span>
+                        </div>
+                      </td>
+                      <td className="size-px whitespace-nowrap">
+                        <div className="flex -space-x-2 px-6 py-2">
+                          <div className="h-6 w-6 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                          <div className="h-6 w-6 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                          <div className="h-6 w-6 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                        </div>
+                      </td>
+                      <td className="size-px whitespace-nowrap">
+                        <div className="px-6 py-2">
+                          <div className="hs-dropdown relative inline-block [--placement:bottom-right]">
+                            <div className="h-4 w-4 rounded bg-gray-200 dark:bg-gray-700"></div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
                 </TableCell>
               </TableRow>
             )}
@@ -104,23 +163,22 @@ export function DataTable<TData, TValue>({
       </ScrollArea>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{' '}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          Page {page} of {totalPage}
         </div>
         <div className="space-x-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => previousPage()}
+            className="cursor-pointer"
           >
             Previous
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() => nextPage()}
+            className="cursor-pointer"
           >
             Next
           </Button>

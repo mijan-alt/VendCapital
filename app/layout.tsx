@@ -5,7 +5,8 @@ import type { Metadata } from 'next';
 import NextTopLoader from 'nextjs-toploader';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { auth } from '@/auth';
+import { auth, handlers } from '@/auth';
+import { connectToMongoDB } from '@/utils/db';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,7 +20,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  await connectToMongoDB();
   const session = await auth();
+  console.log('my session in app', session);
+  console.log('my handlers', handlers);
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} overflow-hidden`}>

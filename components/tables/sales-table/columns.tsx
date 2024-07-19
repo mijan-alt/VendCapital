@@ -1,10 +1,10 @@
 'use client';
 import { ColumnDef } from '@tanstack/react-table';
 import { CellAction } from './cell-action';
-import { User } from '@/constants/data';
+import { Invoice } from '@/constants/data';
 import { Checkbox } from '@/components/ui/checkbox';
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<Invoice>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -33,12 +33,20 @@ export const columns: ColumnDef<User>[] = [
     header: 'EMAIL'
   },
   {
-    accessorKey: 'business',
-    header: 'BUSINESS'
+    accessorKey: 'reference',
+    header: 'REFERENCE'
   },
   {
-    accessorKey: 'role',
-    header: 'ROLE'
+    accessorKey: 'date',
+    header: 'DATE'
+  },
+  {
+    accessorKey: 'amount',
+    header: 'AMOUNT'
+  },
+  {
+    accessorKey: 'status',
+    header: 'STATUS'
   },
   {
     id: 'actions',

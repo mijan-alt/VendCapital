@@ -1,17 +1,19 @@
-'use client';
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import { UserClient } from '@/components/tables/user-tables/client';
+import { CustomerClient } from '@/components/tables/customers-tables/CustomerClient';
+import axios from 'axios';
+import { useEffect } from 'react';
 
 const breadcrumbItems = [
   { title: 'Dashboard', link: '/dashboard' },
-  { title: 'User', link: '/dashboard/user' }
+  { title: 'Customer', link: '/dashboard/customers' }
 ];
-export default function page() {
+
+export default async function page() {
   return (
     <>
       <div className="flex-1 space-y-4  p-4 pt-6 md:p-8">
         <Breadcrumbs items={breadcrumbItems} />
-        <UserClient />
+        <CustomerClient />
       </div>
     </>
   );

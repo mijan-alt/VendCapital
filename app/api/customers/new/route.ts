@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import Customer from '@/models/Customer'; // Adjust the path as necessary
-import { connectToMongoDB } from '@/utils/db';
+import { connectToMongoDB } from '@/utils/db.js';
 
 export const POST = async (request: Request) => {
   const data = await request.json();

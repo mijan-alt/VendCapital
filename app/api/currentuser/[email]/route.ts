@@ -1,6 +1,6 @@
 // app/api/user/route.ts
 import { NextResponse } from 'next/server';
-import { connectToMongoDB } from '@/utils/db';
+import { connectToMongoDB } from '@/utils/db.js';
 import User from '@/models/User';
 import { type NextRequest } from 'next/server';
 

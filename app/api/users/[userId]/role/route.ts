@@ -1,6 +1,6 @@
 // app/api/users/[userId]/role/route.ts
 import { NextResponse } from 'next/server';
-import { connectToMongoDB } from '@/utils/db';
+import { connectToMongoDB } from '@/utils/db.js';
 import User from '@/models/User';
 
 export async function PATCH(

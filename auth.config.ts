@@ -3,7 +3,7 @@ import CredentialProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import bcrypt from 'bcryptjs';
 import User from './models/User';
-import { connectToMongoDB } from '@/utils/db';
+import { connectToMongoDB } from '@/utils/db.js';
 
 const authConfig: NextAuthConfig = {
   providers: [

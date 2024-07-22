@@ -2,7 +2,7 @@ import Customer from '@/models/Customer'; // Adjust the path as necessary
 
 import { NextResponse } from 'next/server';
 import { type NextRequest } from 'next/server';
-import { connectToMongoDB } from '@/utils/db';
+import { connectToMongoDB } from '@/utils/db.js';
 
 export const GET = async (request: NextRequest) => {
   try {

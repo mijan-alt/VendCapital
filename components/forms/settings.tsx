@@ -34,7 +34,7 @@ export default function UserProfileSettings() {
 
   useEffect(() => {
     if (session?.user?.email) {
-      setImageUrl(`/api/user/${session.user.email}/picture`);
+      setImageUrl(`/api/picture/${session.user.email}`);
     }
   }, [session?.user?.email]);
 
@@ -42,7 +42,9 @@ export default function UserProfileSettings() {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`/api/user/${session.user.email}`);
+        const response = await axios.get(
+          `/api/currentuser/${session.user.email}`
+        );
 
         if (response.status === 200) {
           setUser(response.data);
@@ -100,7 +102,7 @@ export default function UserProfileSettings() {
         setIsEditing(false);
         setNewPicture(null);
         setImageUrl(
-          `/api/user/${session.user.email}/picture?${new Date().getTime()}`
+          `/api/picture/${session.user.email}/picture?${new Date().getTime()}`
         );
       }
 

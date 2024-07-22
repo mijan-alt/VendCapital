@@ -1,3 +1,4 @@
+'use server';
 import User from '@/models/User'; // Adjust the path as necessary
 import { connectToMongoDB } from '@/utils/db.js';
 import { NextResponse } from 'next/server';

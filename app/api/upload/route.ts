@@ -1,5 +1,5 @@
 // app/api/upload/route.ts
-
+'use server';
 import { NextResponse } from 'next/server';
 import { type NextRequest } from 'next/server';
 import { connectToMongoDB } from '@/utils/db.js';

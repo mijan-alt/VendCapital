@@ -1,3 +1,4 @@
+'use server';
 // app/api/user/route.ts
 import { NextResponse } from 'next/server';
 import { connectToMongoDB } from '@/utils/db.js';

@@ -1,3 +1,4 @@
+'use server';
 import Customer from '@/models/Customer'; // Adjust the path as necessary
 
 import { NextResponse } from 'next/server';

@@ -19,7 +19,6 @@ import GoogleSignInButton from '../github-auth-button';
 import { SnackbarProvider, enqueueSnackbar, closeSnackbar } from 'notistack';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' }),
@@ -28,15 +27,14 @@ const formSchema = z.object({
 
 type UserFormValue = z.infer<typeof formSchema>;
 
-export default function UserAuthForm() {
+export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
   const [loading, setLoading] = useState(false);
   const defaultValues = {
     email: '',
-    password: '',
-    username: ''
+    password: ''
   };
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
@@ -45,19 +43,22 @@ export default function UserAuthForm() {
 
   const onSubmit = async (data: UserFormValue) => {
     console.log(data);
-    let userdata = { ...data, username: data.email.split('@')[0] };
 
     try {
-      const response = await axios.post('/api/register', userdata);
+      const response = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        callbackUrl: callbackUrl ?? '/dashboard'
+      });
 
       console.log('my response', response);
 
-      if (response.status == 200) {
-        enqueueSnackbar('Sign up successfull', {
+      if (response?.ok) {
+        enqueueSnackbar('Success', {
           variant: 'success',
           autoHideDuration: 5000,
           anchorOrigin: {
-            vertical: 'bottom',
+            vertical: 'top',
             horizontal: 'center'
           },
 
@@ -83,13 +84,12 @@ export default function UserAuthForm() {
             </button>
           )
         });
-        router.push('/signin');
-      } else if (response.status === 409) {
-        enqueueSnackbar('User is already in use', {
+      } else {
+        enqueueSnackbar('Invalid email or password', {
           variant: 'error',
           autoHideDuration: 5000,
           anchorOrigin: {
-            vertical: 'bottom',
+            vertical: 'top',
             horizontal: 'center'
           },
 
@@ -117,36 +117,7 @@ export default function UserAuthForm() {
         });
       }
     } catch (error) {
-      enqueueSnackbar('User is already in use', {
-        variant: 'error',
-        autoHideDuration: 5000,
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'center'
-        },
-
-        action: (key) => (
-          <button onClick={() => closeSnackbar(key)}>
-            {' '}
-            <svg
-              width="1em"
-              height="1em"
-              viewBox="0 0 24 24"
-              className=""
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M21 21l-9-9m0 0L3 3m9 9l9-9m-9 9l-9 9"
-                stroke="#fff"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        )
-      });
+      console.log(error);
     }
   };
 
@@ -199,7 +170,7 @@ export default function UserAuthForm() {
           />
 
           <Button disabled={loading} className="ml-auto w-full" type="submit">
-            Signup
+            Login
           </Button>
         </form>
       </Form>

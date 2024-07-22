@@ -3,8 +3,7 @@ import CredentialProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import bcrypt from 'bcryptjs';
 import User from './models/User';
-import { z } from 'zod';
-import { connectToMongoDB } from '@/utils/connect';
+import { connectToMongoDB } from '@/utils/db';
 
 const authConfig: NextAuthConfig = {
   providers: [
@@ -13,6 +12,8 @@ const authConfig: NextAuthConfig = {
       clientSecret: process.env.GOOGLE_SECRET
     }),
     CredentialProvider({
+      id: 'credentials',
+      name: 'credentials',
       credentials: {
         email: {
           type: 'email'
@@ -20,48 +21,50 @@ const authConfig: NextAuthConfig = {
         password: {
           type: 'password'
         }
+      },
+
+      async authorize(credentials): Promise<any> {
+        const { email, password } = credentials;
+
+        try {
+          await connectToMongoDB();
+          let user = await User.findOne({ email });
+
+          if (user) {
+            const isPasswordCorrect = await bcrypt.compare(
+              password as string,
+              user.password as string
+            );
+
+            if (isPasswordCorrect) {
+              return user;
+            }
+          }
+        } catch (error: any) {
+          console.error('Authorization error:', error);
+          throw new Error(error.message);
+        }
       }
-      // async authorize(credentials) {
-      //   const { email, password } = credentials;
-
-      //   let user;
-      //   user = await User.findOne({ email });
-
-      //   if (!user) {
-      //     const hashedPassword = bcrypt.hashSync(password as string, 10);
-      //     user = await User.create({
-      //       email: email,
-      //       password: hashedPassword,
-      //       role: 'user'
-      //     });
-      //     return user;
-      //   } else {
-      //     let isPasswordCorrect = bcrypt.compareSync(
-      //       password as string,
-      //       user.password as string
-      //     );
-      //     if (isPasswordCorrect) {
-      //       return user;
-      //     } else {
-      //       return null;
-      //     }
-      //   }
-      // }
     })
   ],
 
   pages: {
-    signIn: '/', // Sign-in page
-    error: '/'
+    signIn: '/signin', // Sign-in page
+    error: '/signin'
   },
+
   callbacks: {
-    async signIn({ profile, account }) {
-      if (!profile) {
-        return false;
+    async signIn({ profile, account, credentials, user }) {
+      console.log(account, credentials, 'signin');
+      console.log(user);
+
+      if (account?.provider == 'credentials') {
+        return true;
       }
 
-      if (account?.provider === 'google') {
+      if (account?.provider === 'google' && profile) {
         try {
+          await connectToMongoDB();
           // CHECK IF A USER ALREADY EXISTS
           const userExists = await User.findOne({
             email: profile.email
@@ -71,7 +74,7 @@ const authConfig: NextAuthConfig = {
           if (!userExists) {
             await User.create({
               email: profile.email,
-              username: profile.name?.replace(/\s/g, '').toLowerCase(),
+              username: profile.name,
               image: profile.picture,
               role: 'user'
             });
@@ -85,34 +88,60 @@ const authConfig: NextAuthConfig = {
 
       return false;
     },
-    async jwt({ token, account, profile }) {
-      console.log(profile, 'my profile');
-      console.log(token);
 
-      if (account && profile) {
-        let user = await User.findOne({ email: profile.email });
+    async jwt({ token, user, account, profile }) {
+      try {
+        if (user) {
+          // If using Google sign-in and first sign-in
+          if (account?.provider === 'google' && profile) {
+            await connectToMongoDB();
+            let dbUser = await User.findOne({ email: profile.email });
 
-        if (!user) {
-          // Create a new user if one doesn't exist
-          user = new User({ email: profile.email, role: 'user' });
-        }
-        // Check if the email matches the admin email
-        if (profile.email === process.env.ADMIN_EMAIL) {
-          user.role = 'admin';
-          token.role = 'admin';
+            if (!dbUser) {
+              dbUser = new User({
+                email: profile.email,
+                username: profile.name,
+                image: profile.picture,
+                role:
+                  profile.email === process.env.ADMIN_EMAIL ? 'admin' : 'user'
+              });
+              await dbUser.save();
+            }
+
+            token.role = dbUser.role;
+          }
+
+          // For credentials sign-in
+          if (account?.provider === 'credentials') {
+            await connectToMongoDB();
+            let dbUser = await User.findOne({ email: user.email });
+            token.role = user.role;
+            token.name = dbUser.username;
+          }
         } else {
-          token.role = user.role;
-        }
+          // Subsequent requests
+          await connectToMongoDB();
+          const dbUser = await User.findOne({ email: token.email });
 
-        await user.save();
+          if (dbUser) {
+            token.role = dbUser.role;
+            token.name = dbUser.username;
+          }
+        }
+      } catch (error) {
+        console.error('JWT callback error:', error);
       }
+
       return token;
     },
 
     async session({ session, token }) {
-      session.user.role = token?.role;
+      session.user = {
+        ...session.user,
+        role: token.role,
+        name: token.name
+      };
 
-      console.log('session', session);
       return session;
     }
   }

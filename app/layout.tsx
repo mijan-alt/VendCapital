@@ -20,10 +20,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await connectToMongoDB();
   const session = await auth();
-  console.log('my session in app', session);
-  console.log('my handlers', handlers);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} overflow-hidden`}>

@@ -33,10 +33,8 @@ export function DashboardNav({
     return null;
   }
 
-  console.log('isActive', isMobileNav, isMinimized);
-
   return (
-    <nav className="grid items-start gap-2">
+    <nav className="grid items-start gap-2 ">
       <TooltipProvider>
         {items.map((item, index) => {
           const Icon = Icons[item.icon || 'arrowRight'];

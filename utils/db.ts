@@ -1,23 +1,14 @@
-// Importing mongoose library
+'use server';
 import mongoose from 'mongoose';
 
-// Function to establish a connection to MongoDB
-export async function connectToMongoDB() {
+export const connectToMongoDB = async () => {
   try {
-    console.log('Creating new db connection');
-    const opts = {
-      bufferCommands: false
-    };
+    await mongoose.connect(process.env.MONGO_URI as string, {
+      dbName: 'Vendcapital'
+    });
 
-    // Establish a new connection to MongoDB
-    const cnx = await mongoose.connect(process.env.MONGO_URI as string, opts);
-    // Log message indicating a new MongoDB connection is established
-    console.log('New mongodb connection established');
-    // Return the newly established connection
-    return cnx.connection;
+    console.log('MongoDB connected');
   } catch (error) {
-    // If an error occurs during connection, log the error and throw it
-    console.log(error);
-    throw error;
+    console.log(error.message);
   }
-}
+};

@@ -7,6 +7,9 @@ interface IUser extends Document {
   username?: string;
   image?: string;
   role?: string;
+  firstName?: string;
+  lastName?: string;
+  business?: string;
 }
 
 // Define the schema
@@ -22,8 +25,18 @@ const UserSchema = new mongoose.Schema<IUser>({
   username: {
     type: String
   },
-  image: {
+  firstName: {
     type: String
+  },
+  lastName: {
+    type: String
+  },
+  business: {
+    type: String
+  },
+  image: {
+    data: Buffer,
+    contentType: String
   },
   role: {
     type: String,
@@ -32,7 +45,6 @@ const UserSchema = new mongoose.Schema<IUser>({
 });
 
 // Define and export the User model
-const User: Model<IUser> =
-  mongoose.models?.User || mongoose.model<IUser>('User', UserSchema);
+const User = mongoose.models?.User || mongoose.model<IUser>('User', UserSchema);
 
 export default User;

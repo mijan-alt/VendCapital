@@ -4,13 +4,17 @@ import { DashboardNav } from '@/components/dashboard-nav';
 import { navItems } from '@/constants/data';
 import { cn } from '@/lib/utils';
 import { ChevronLeft } from 'lucide-react';
+
 import { useSidebar } from '@/hooks/useSidebar';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { useSession } from 'next-auth/react';
 
 type SidebarProps = {
   className?: string;
 };
 
 export default function Sidebar({ className }: SidebarProps) {
+  const { data: session } = useSession();
   const { isMinimized, toggle } = useSidebar();
   const [status, setStatus] = useState(false);
 
@@ -22,7 +26,7 @@ export default function Sidebar({ className }: SidebarProps) {
   return (
     <nav
       className={cn(
-        `relative hidden h-screen flex-none border-r z-10 pt-20 md:block`,
+        `relative z-10 hidden h-screen flex-none border-r pt-20 md:block`,
         status && 'duration-500',
         !isMinimized ? 'w-72' : 'w-[72px]',
         className
@@ -39,6 +43,20 @@ export default function Sidebar({ className }: SidebarProps) {
         <div className="px-3 py-2">
           <div className="mt-3 space-y-1">
             <DashboardNav items={navItems} />
+          </div>
+          <div className="mt-12 flex cursor-pointer flex-row gap-4">
+            <Avatar>
+              <AvatarImage src={session?.user?.image} />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <div
+              className={`${
+                isMinimized ? 'hidden' : 'flex flex-col justify-center'
+              }`}
+            >
+              <p className="text-sm">{session?.user?.name}</p>
+              <p className="text-sm font-bold">{session?.user?.role}</p>
+            </div>
           </div>
         </div>
       </div>

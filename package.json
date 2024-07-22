@@ -48,13 +48,14 @@
     "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
+    "bson": "5.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
     "eslint": "8.48.0",
     "eslint-config-next": "^14.0.1",
     "lucide-react": "^0.291.0",
-    "mongoose": "^8.5.0",
+    "mongoose": "^8.5.1",
     "next": "^14.2.3",
     "next-auth": "^5.0.0-beta.18",
     "next-themes": "^0.2.1",
@@ -75,8 +76,7 @@
     "uploadthing": "^5.7.4",
     "uuid": "^9.0.1",
     "zod": "^3.22.4",
-    "zustand": "^4.4.6",
-    "bson": "5.0.0"
+    "zustand": "^4.4.6"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

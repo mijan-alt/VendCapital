@@ -22,23 +22,18 @@ export default function AuthenticationPage() {
           </p>
         </div>
         <UserAuthForm />
-        <p className="px-8 text-center text-sm text-muted-foreground">
-          By clicking continue, you agree to our{' '}
+        <div className="flex flex-row items-center justify-between">
+          <p className="px-8 text-center text-sm text-muted-foreground">
+            Already have an account?
+          </p>
+
           <Link
-            href="/terms"
+            href="/signin"
             className="underline underline-offset-4 hover:text-primary"
           >
-            Terms of Service
-          </Link>{' '}
-          and{' '}
-          <Link
-            href="/privacy"
-            className="underline underline-offset-4 hover:text-primary"
-          >
-            Privacy Policy
+            Login
           </Link>
-          .
-        </p>
+        </div>
       </div>
     </div>
   );

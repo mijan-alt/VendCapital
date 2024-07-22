@@ -125,6 +125,12 @@ export const navItems: NavItem[] = [
     label: 'kanban'
   },
   {
+    title: 'Settings',
+    href: '/dashboard/settings',
+    icon: 'settings',
+    label: 'settings'
+  },
+  {
     title: 'Login',
     href: '/',
     icon: 'login',

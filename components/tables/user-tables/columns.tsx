@@ -25,7 +25,7 @@ export const columns: ColumnDef<User>[] = [
     enableHiding: false
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'username',
     header: 'NAME'
   },
   {

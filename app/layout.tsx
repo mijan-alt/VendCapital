@@ -7,6 +7,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { auth, handlers } from '@/auth';
 import { connectToMongoDB } from '@/utils/db';
+import { LoadingProvider } from '@/context/LoadingContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,11 +26,13 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} overflow-hidden`}>
-        <NextTopLoader showSpinner={false} />
-        <Providers session={session}>
-          <Toaster />
-          {children}
-        </Providers>
+        <LoadingProvider>
+          <NextTopLoader showSpinner={false} />
+          <Providers session={session}>
+            <Toaster />
+            {children}
+          </Providers>
+        </LoadingProvider>
       </body>
     </html>
   );

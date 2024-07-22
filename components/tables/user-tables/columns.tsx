@@ -26,7 +26,13 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     accessorKey: 'username',
-    header: 'NAME'
+    header: 'NAME',
+    accessorFn: (row) => {
+      if (row.firstName || row.lastName) {
+        return `${row.firstName || ''} ${row.lastName || ''}`.trim();
+      }
+      return row.username;
+    }
   },
   {
     accessorKey: 'email',

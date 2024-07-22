@@ -7,6 +7,9 @@ export type User = {
   business: string;
   role: string;
   status: string;
+  username?: string;
+  firstName?: string;
+  lastName?: string;
 };
 
 export type Expense = {

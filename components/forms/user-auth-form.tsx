@@ -20,6 +20,7 @@ import { SnackbarProvider, enqueueSnackbar, closeSnackbar } from 'notistack';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
+import { Eye, EyeOff } from 'lucide-react'; // Import Eye icons
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' }),
@@ -29,6 +30,7 @@ const formSchema = z.object({
 type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
@@ -48,6 +50,7 @@ export default function UserAuthForm() {
     let userdata = { ...data, username: data.email.split('@')[0] };
 
     try {
+      setLoading(true);
       const response = await axios.post('/api/register', userdata);
 
       console.log('my response', response);
@@ -83,6 +86,7 @@ export default function UserAuthForm() {
             </button>
           )
         });
+        setLoading(false);
         router.push('/signin');
       } else if (response.status === 409) {
         enqueueSnackbar('User is already in use', {
@@ -115,6 +119,7 @@ export default function UserAuthForm() {
             </button>
           )
         });
+        setLoading(false);
       }
     } catch (error) {
       enqueueSnackbar('User is already in use', {
@@ -147,7 +152,12 @@ export default function UserAuthForm() {
           </button>
         )
       });
+      setLoading(false);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -186,12 +196,21 @@ export default function UserAuthForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="******"
-                    disabled={loading}
-                    {...field}
-                  />
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="******"
+                      disabled={loading}
+                      {...field}
+                    />
+                    <button
+                      type="button"
+                      onClick={togglePasswordVisibility}
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>

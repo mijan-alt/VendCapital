@@ -19,6 +19,7 @@ import GoogleSignInButton from '../github-auth-button';
 import { SnackbarProvider, enqueueSnackbar, closeSnackbar } from 'notistack';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { Eye, EyeOff } from 'lucide-react'; // Import Eye icons
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' }),
@@ -32,6 +33,7 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
   const defaultValues = {
     email: '',
     password: ''
@@ -45,46 +47,17 @@ export default function LoginForm() {
     console.log(data);
 
     try {
+      setLoading(true);
       const response = await signIn('credentials', {
         email: data.email,
         password: data.password,
+        redirect: false, // I want to redirect manually
         callbackUrl: callbackUrl ?? '/dashboard'
       });
 
       console.log('my response', response);
 
-      if (response?.ok) {
-        enqueueSnackbar('Success', {
-          variant: 'success',
-          autoHideDuration: 5000,
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center'
-          },
-
-          action: (key) => (
-            <button onClick={() => closeSnackbar(key)}>
-              {' '}
-              <svg
-                width="1em"
-                height="1em"
-                viewBox="0 0 24 24"
-                className=""
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M21 21l-9-9m0 0L3 3m9 9l9-9m-9 9l-9 9"
-                  stroke="#fff"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          )
-        });
-      } else {
+      if (response?.error) {
         enqueueSnackbar('Invalid email or password', {
           variant: 'error',
           autoHideDuration: 5000,
@@ -115,10 +88,77 @@ export default function LoginForm() {
             </button>
           )
         });
+        setLoading(false);
+      } else {
+        enqueueSnackbar('Sign in successfull', {
+          variant: 'success',
+          autoHideDuration: 5000,
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center'
+          },
+
+          action: (key) => (
+            <button onClick={() => closeSnackbar(key)}>
+              {' '}
+              <svg
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+                className=""
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M21 21l-9-9m0 0L3 3m9 9l9-9m-9 9l-9 9"
+                  stroke="#fff"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          )
+        });
+        router.push(response?.url || '/dashboard');
       }
     } catch (error) {
       console.log(error);
+      enqueueSnackbar('An unexpected error occured', {
+        variant: 'error',
+        autoHideDuration: 5000,
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'center'
+        },
+
+        action: (key) => (
+          <button onClick={() => closeSnackbar(key)}>
+            {' '}
+            <svg
+              width="1em"
+              height="1em"
+              viewBox="0 0 24 24"
+              className=""
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M21 21l-9-9m0 0L3 3m9 9l9-9m-9 9l-9 9"
+                stroke="#fff"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        )
+      });
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -157,12 +197,21 @@ export default function LoginForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="******"
-                    disabled={loading}
-                    {...field}
-                  />
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="******"
+                      disabled={loading}
+                      {...field}
+                    />
+                    <button
+                      type="button"
+                      onClick={togglePasswordVisibility}
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>

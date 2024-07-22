@@ -7,7 +7,7 @@ import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { useRouter } from 'next/navigation';
 import { Pencil } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+import { useSession, signIn, signOut, getSession } from 'next-auth/react';
 import axios from 'axios';
 import Formloader from '../loaders/Formloader';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -102,6 +102,18 @@ export default function UserProfileSettings() {
         setImageUrl(
           `/api/user/${session.user.email}/picture?${new Date().getTime()}`
         );
+      }
+
+      //update the session
+      const newSession = await getSession();
+      if (newSession) {
+        newSession.user = {
+          ...newSession.user,
+          firstName: response.data.firstName,
+          lastName: response.data.lastName,
+          name: `${response.data.firstName} ${response.data.lastName}`.trim()
+        };
+        await signIn('credentials', { redirect: false, ...newSession });
       }
     } catch (err) {
       setError('Failed to update user data');

@@ -75,6 +75,8 @@ const authConfig: NextAuthConfig = {
             await User.create({
               email: profile.email,
               username: profile.name,
+              firstName: profile.given_name,
+              lastName: profile.family_name,
               image: profile.picture,
               role: 'user'
             });
@@ -101,6 +103,8 @@ const authConfig: NextAuthConfig = {
               dbUser = new User({
                 email: profile.email,
                 username: profile.name,
+                firstName: profile.given_name,
+                lastName: profile.family_name,
                 image: profile.picture,
                 role:
                   profile.email === process.env.ADMIN_EMAIL ? 'admin' : 'user'
@@ -109,6 +113,9 @@ const authConfig: NextAuthConfig = {
             }
 
             token.role = dbUser.role;
+            token.firstName = dbUser.firstName;
+            token.lastName = dbUser.lastName;
+            token.username = dbUser.username;
           }
 
           // For credentials sign-in
@@ -116,7 +123,9 @@ const authConfig: NextAuthConfig = {
             await connectToMongoDB();
             let dbUser = await User.findOne({ email: user.email });
             token.role = user.role;
-            token.name = dbUser.username;
+            token.username = dbUser.username;
+            token.firstName = dbUser.firstName;
+            token.lastName = dbUser.lastName;
           }
         } else {
           // Subsequent requests
@@ -125,9 +134,17 @@ const authConfig: NextAuthConfig = {
 
           if (dbUser) {
             token.role = dbUser.role;
-            token.name = dbUser.username;
+            token.firstName = dbUser.firstName;
+            token.lastName = dbUser.lastName;
+            token.username = dbUser.username;
           }
         }
+
+        // Set name based on firstName and lastName, or fallback to username
+        token.name =
+          (token.firstName || token.lastName
+            ? `${token.firstName || ''} ${token.lastName || ''}`.trim()
+            : token.username) || token.name;
       } catch (error) {
         console.error('JWT callback error:', error);
       }
@@ -139,9 +156,13 @@ const authConfig: NextAuthConfig = {
       session.user = {
         ...session.user,
         role: token.role,
-        name: token.name
+        name: token.name,
+        firstName: token.firstName || '',
+        lastName: token.lastName || '',
+        username: token.username || ''
       };
 
+      return session;
       return session;
     }
   }

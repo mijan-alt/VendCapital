@@ -49,11 +49,22 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           {isSuperAdmin && (
             <>
               <DropdownMenuItem
-                onClick={() =>
-                  router.push(
-                    `/dashboard/user/edit-role/${data?._id}?currentRole=${data.role}`
-                  )
-                }
+                onClick={() => {
+                  if (isSuperAdmin) {
+                    const userData = {
+                      username: data.username,
+                      business: data.business,
+                      role: data.role,
+                      userId: data._id
+                    };
+                    const encodedData = encodeURIComponent(
+                      JSON.stringify(userData)
+                    );
+                    router.push(
+                      `/dashboard/user/edit-role?userData=${encodedData}`
+                    );
+                  }
+                }}
               >
                 <Edit className="mr-2 h-4 w-4" />
                 Edit role

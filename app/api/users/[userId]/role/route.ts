@@ -7,11 +7,7 @@ export async function PATCH(
   request: Request,
   { params }: { params: { userId: string } }
 ) {
-  //   // Check if the user is authenticated and is a superadmin
-  //   if (!session || session.user.role !== 'superadmin') {
-  //     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  //   }
-
+  console.log('hitting patch');
   const { role } = await request.json();
   const { userId } = params;
 
@@ -28,10 +24,13 @@ export async function PATCH(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    return NextResponse.json({
-      message: 'Role updated successfully',
-      user: updatedUser
-    });
+    return NextResponse.json(
+      {
+        message: 'Role updated successfully',
+        user: updatedUser
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Error updating user role:', error);
     return NextResponse.json(

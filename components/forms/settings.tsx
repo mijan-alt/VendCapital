@@ -11,6 +11,7 @@ import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import Formloader from '../loaders/Formloader';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function UserProfileSettings() {
   const router = useRouter();
@@ -229,24 +230,6 @@ export default function UserProfileSettings() {
                 className="w-full rounded-lg border px-3 py-2 text-sm text-muted-foreground"
               />
             </div>
-
-            {isEditing && (
-              <div>
-                <button
-                  type="submit"
-                  className="mr-2 rounded-lg bg-blue-500 px-4 py-2 text-white"
-                >
-                  Save Changes
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsEditing(false)}
-                  className="rounded-lg bg-gray-300 px-4 py-2 text-black"
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
           </form>
         )}
       </>

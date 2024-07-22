@@ -1,7 +1,7 @@
 'use client';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { UserClient } from '@/components/tables/user-tables/client';
-
+import { ScrollArea } from '@/components/ui/scroll-area';
 const breadcrumbItems = [
   { title: 'Dashboard', link: '/dashboard' },
   { title: 'User', link: '/dashboard/user' }

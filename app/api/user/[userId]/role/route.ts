@@ -1,0 +1,42 @@
+// app/api/users/[userId]/role/route.ts
+import { NextResponse } from 'next/server';
+import { connectToMongoDB } from '@/utils/db';
+import User from '@/models/User';
+
+export async function PATCH(
+  request: Request,
+  { params }: { params: { userId: string } }
+) {
+  //   // Check if the user is authenticated and is a superadmin
+  //   if (!session || session.user.role !== 'superadmin') {
+  //     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  //   }
+
+  const { role } = await request.json();
+  const { userId } = params;
+
+  try {
+    await connectToMongoDB();
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { role },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      message: 'Role updated successfully',
+      user: updatedUser
+    });
+  } catch (error) {
+    console.error('Error updating user role:', error);
+    return NextResponse.json(
+      { error: 'Failed to update role' },
+      { status: 500 }
+    );
+  }
+}

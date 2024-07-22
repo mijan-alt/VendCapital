@@ -12,6 +12,7 @@ import { User } from '@/constants/data';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 interface CellActionProps {
   data: User;
@@ -21,8 +22,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const { data: session } = useSession();
 
   const onConfirm = async () => {};
+
+  const isSuperAdmin = session?.user?.role === 'Super Admin';
 
   return (
     <>
@@ -42,14 +46,23 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/user/${data.id}`)}
-          >
-            <Edit className="mr-2 h-4 w-4" /> Update
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="mr-2 h-4 w-4" /> Delete
-          </DropdownMenuItem>
+          {isSuperAdmin && (
+            <>
+              <DropdownMenuItem
+                onClick={() =>
+                  router.push(
+                    `/dashboard/user/edit-role/${data?._id}?currentRole=${data.role}`
+                  )
+                }
+              >
+                <Edit className="mr-2 h-4 w-4" />
+                Edit role
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setOpen(true)}>
+                <Trash className="mr-2 h-4 w-4" /> Delete
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </>

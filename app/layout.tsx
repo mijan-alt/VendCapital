@@ -6,7 +6,6 @@ import NextTopLoader from 'nextjs-toploader';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { auth, handlers } from '@/auth';
-import { connectToMongoDB } from '@/utils/db';
 import { LoadingProvider } from '@/context/LoadingContext';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -37,3 +36,5 @@ export default async function RootLayout({
     </html>
   );
 }
+
+export const runtime = 'edge'; // 'nodejs' (default) | 'edge'

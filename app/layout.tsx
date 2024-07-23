@@ -37,4 +37,4 @@ export default async function RootLayout({
   );
 }
 
-export const runtime = 'edge'; // 'nodejs' (default) | 'edge'
+export const runtime = 'nodejs'; // 'nodejs' (default) | 'edge'

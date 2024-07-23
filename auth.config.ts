@@ -100,7 +100,7 @@ const authConfig: NextAuthConfig = {
             let dbUser = await User.findOne({ email: profile.email });
 
             if (!dbUser) {
-              dbUser = new User({
+              await dbUser.create({
                 email: profile.email,
                 username: profile.name,
                 firstName: profile.given_name,
@@ -109,7 +109,6 @@ const authConfig: NextAuthConfig = {
                 role:
                   profile.email === process.env.ADMIN_EMAIL ? 'admin' : 'user'
               });
-              await dbUser.save();
             }
 
             token.role = dbUser.role;

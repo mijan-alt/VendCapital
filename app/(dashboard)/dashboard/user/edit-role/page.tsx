@@ -64,9 +64,9 @@ export default function EditUserRole() {
             className="mb-4 w-full rounded-lg border px-3 py-2 text-sm text-muted-foreground"
           >
             <option value="user">User</option>
-            <option value="admin">Admin</option>
-            <option value="admin">Business Manager</option>
-            <option value="superadmin">Superadmin</option>
+            <option value="Admin">Admin</option>
+            <option value="Business Manager">Business Manager</option>
+            <option value="Super Admin">Super Admin</option>
           </select>
           <Button disabled={loading} type="submit">
             Update Role

@@ -9,6 +9,7 @@ export interface IBusiness extends Document {
   accountNumber: string;
   accountName: string;
   bankName: string;
+  user: mongoose.Schema.Types.ObjectId;
 }
 
 // Define the Business schema
@@ -30,6 +31,11 @@ const BusinessSchema = new Schema<IBusiness>({
   },
   bankName: {
     type: String,
+    required: true
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   }
 });

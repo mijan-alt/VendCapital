@@ -8,7 +8,7 @@ export type Customer = {
 };
 
 // Define the Mongoose schema
-interface ICustomer extends Document {
+export interface ICustomer extends Document {
   name: string;
   email: string;
   phone: string;

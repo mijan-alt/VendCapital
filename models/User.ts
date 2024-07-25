@@ -1,4 +1,6 @@
-import mongoose, { Document, Model } from 'mongoose';
+import mongoose, { Document, Model, Schema } from 'mongoose';
+import { IBusiness } from './Business';
+import { ICustomer } from './Customer';
 
 // Define the interface for user document
 interface IUser extends Document {
@@ -9,7 +11,8 @@ interface IUser extends Document {
   role?: string;
   firstName?: string;
   lastName?: string;
-  business?: string;
+  business?: mongoose.Types.ObjectId | IBusiness;
+  customers?: mongoose.Types.ObjectId[] | ICustomer[];
 }
 
 // Define the schema
@@ -32,17 +35,23 @@ const UserSchema = new mongoose.Schema<IUser>({
     type: String
   },
   business: {
-    type: String
+    type: Schema.Types.ObjectId,
+    ref: 'Business'
   },
   image: {
-    data: Buffer,
-    contentType: String
+    type: String
   },
   role: {
     type: String,
     default: 'user',
     enum: ['user', 'Admin', 'Super Admin', 'Business Manager']
-  }
+  },
+  customers: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Customer'
+    }
+  ]
 });
 
 // Define and export the User model

@@ -2,6 +2,7 @@ import mongoose, { Document, Model, Schema } from 'mongoose';
 import { IBusiness } from './Business';
 import { ICustomer } from './Customer';
 import { IExpense } from './Expense';
+
 // Define the interface for user document
 interface IUser extends Document {
   email: string;
@@ -51,6 +52,12 @@ const UserSchema = new mongoose.Schema<IUser>({
     {
       type: Schema.Types.ObjectId,
       ref: 'Customer'
+    }
+  ],
+  expenses: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Expense'
     }
   ]
 });

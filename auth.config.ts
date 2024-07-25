@@ -110,7 +110,7 @@ const authConfig: NextAuthConfig = {
                   profile.email === process.env.ADMIN_EMAIL ? 'admin' : 'user'
               });
             }
-
+            token.id = dbUser._id.toString();
             token.role = dbUser.role;
             token.firstName = dbUser.firstName;
             token.lastName = dbUser.lastName;
@@ -121,6 +121,7 @@ const authConfig: NextAuthConfig = {
           if (account?.provider === 'credentials') {
             await connectToMongoDB();
             let dbUser = await User.findOne({ email: user.email });
+            token.id = dbUser._id.toString();
             token.role = user.role;
             token.username = dbUser.username;
             token.firstName = dbUser.firstName;
@@ -132,6 +133,7 @@ const authConfig: NextAuthConfig = {
           const dbUser = await User.findOne({ email: token.email });
 
           if (dbUser) {
+            token.id = dbUser._id.toString(); // Add user ID to token
             token.role = dbUser.role;
             token.firstName = dbUser.firstName;
             token.lastName = dbUser.lastName;
@@ -154,6 +156,7 @@ const authConfig: NextAuthConfig = {
     async session({ session, token }) {
       session.user = {
         ...session.user,
+        id: token.id as string,
         role: token.role,
         name: token.name,
         firstName: token.firstName || '',
@@ -161,7 +164,6 @@ const authConfig: NextAuthConfig = {
         username: token.username || ''
       };
 
-      return session;
       return session;
     }
   }

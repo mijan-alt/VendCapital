@@ -34,7 +34,7 @@ import { Box } from 'lucide-react';
 import { TrendingUp } from 'lucide-react';
 import { Users } from 'lucide-react';
 import { Banknote } from 'lucide-react';
-
+import { BriefcaseIcon } from 'lucide-react';
 export type Icon = LucideIcon;
 
 export const Icons = {
@@ -68,6 +68,7 @@ export const Icons = {
   expense: TrendingUp,
   customers: Users,
   sales: Banknote,
+  business: BriefcaseIcon,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

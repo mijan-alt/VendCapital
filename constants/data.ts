@@ -135,10 +135,10 @@ export const navItems: NavItem[] = [
     label: 'settings'
   },
   {
-    title: 'Login',
-    href: '/',
-    icon: 'login',
-    label: 'login'
+    title: 'Business',
+    href: '/dashboard/businessprofile',
+    icon: 'business',
+    label: 'businessprofile'
   }
 ];
 

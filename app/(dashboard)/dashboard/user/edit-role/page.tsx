@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import axios from 'axios';
 import { Breadcrumb } from '@/components/ui/breadcrumb';
 import { useSearchParams } from 'next/navigation';
-
+import { signIn, getSession } from 'next-auth/react';
 export default function EditUserRole() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -32,6 +32,14 @@ export default function EditUserRole() {
       });
       if (response.status == 200) {
         setLoading(false);
+        const newSession = await getSession();
+        if (newSession) {
+          newSession.user = {
+            ...newSession.user,
+            role: role
+          };
+          await signIn('credentials', { redirect: false, ...newSession });
+        }
         router.push('/dashboard/user');
         router.refresh(); // This will trigger a refresh of the user list
       }

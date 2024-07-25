@@ -7,6 +7,7 @@ import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { columns } from './columns';
 import { Expense } from '@/constants/data';
+import { useState } from 'react';
 
 interface ExpenseClientProps {
   data: Expense[];
@@ -14,6 +15,24 @@ interface ExpenseClientProps {
 
 export const ExpenseClient: React.FC<ExpenseClientProps> = ({ data }) => {
   const router = useRouter();
+  const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const perPage = 5;
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+
+  const nextPage = () => {
+    console.log('hit nextpage');
+    if (page < totalPage) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const previousPage = () => {
+    if (page > 1) {
+      setPage((prev) => prev - 1);
+    }
+  };
 
   return (
     <>
@@ -27,7 +46,17 @@ export const ExpenseClient: React.FC<ExpenseClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      <DataTable searchKey="name" columns={columns} data={data} />
+      <DataTable
+        searchKey="name"
+        columns={columns}
+        data={data}
+        previousPage={previousPage}
+        nextPage={nextPage}
+        totalPage={totalPage}
+        count={count}
+        page={page}
+        loading={loading}
+      />
     </>
   );
 };

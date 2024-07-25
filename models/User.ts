@@ -1,7 +1,7 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
 import { IBusiness } from './Business';
 import { ICustomer } from './Customer';
-
+import { IExpense } from './Expense';
 // Define the interface for user document
 interface IUser extends Document {
   email: string;
@@ -13,6 +13,7 @@ interface IUser extends Document {
   lastName?: string;
   business?: mongoose.Types.ObjectId | IBusiness;
   customers?: mongoose.Types.ObjectId[] | ICustomer[];
+  expenses?: mongoose.Types.ObjectId[] | IExpense[];
 }
 
 // Define the schema
@@ -34,10 +35,6 @@ const UserSchema = new mongoose.Schema<IUser>({
   lastName: {
     type: String
   },
-  business: {
-    type: Schema.Types.ObjectId,
-    ref: 'Business'
-  },
   image: {
     type: String
   },
@@ -45,6 +42,10 @@ const UserSchema = new mongoose.Schema<IUser>({
     type: String,
     default: 'user',
     enum: ['user', 'Admin', 'Super Admin', 'Business Manager']
+  },
+  business: {
+    type: Schema.Types.ObjectId,
+    ref: 'Business'
   },
   customers: [
     {

@@ -14,6 +14,11 @@ interface ExpenseClientProps {
 }
 
 export const ExpenseClient: React.FC<ExpenseClientProps> = ({ data }) => {
+  const breadcrumbItems = [
+    { title: 'Dashboard', link: '/dashboard' },
+    { title: 'Expense', link: '/dashboard/expenses' },
+    { title: 'Expense', link: '/dashboard/expenses/new' }
+  ];
   const router = useRouter();
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -40,7 +45,7 @@ export const ExpenseClient: React.FC<ExpenseClientProps> = ({ data }) => {
         <Heading title={`Expenses`} description="" />
         <Button
           className="text-xs md:text-sm"
-          onClick={() => router.push(`/dashboard/user/new`)}
+          onClick={() => router.push(`/dashboard/expenses/new`)}
         >
           <Plus className="mr-2 h-4 w-4" /> Add Expense
         </Button>

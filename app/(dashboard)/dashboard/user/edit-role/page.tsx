@@ -32,14 +32,6 @@ export default function EditUserRole() {
       });
       if (response.status == 200) {
         setLoading(false);
-        const newSession = await getSession();
-        if (newSession) {
-          newSession.user = {
-            ...newSession.user,
-            role: role
-          };
-          await signIn('credentials', { redirect: false, ...newSession });
-        }
         router.push('/dashboard/user');
         router.refresh(); // This will trigger a refresh of the user list
       }

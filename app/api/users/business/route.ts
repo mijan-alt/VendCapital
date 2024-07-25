@@ -1,7 +1,11 @@
+// app/api/users/business/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToMongoDB } from '@/utils/db';
 import User from '@/models/User';
+import { Business } from '@/models/Business';
 import { auth } from '@/auth';
+import mongoose from 'mongoose';
 
 export async function GET(req: NextRequest) {
   try {
@@ -14,8 +18,12 @@ export async function GET(req: NextRequest) {
 
     await connectToMongoDB();
 
+    // Ensure both models are registered
+    mongoose.model('User');
+    mongoose.model('Business');
+
     const user = await User.findById(session.user.id).populate('business');
-    console.log('user before condtional', user);
+    console.log('user before conditional', user);
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
@@ -28,8 +36,15 @@ export async function GET(req: NextRequest) {
     );
   } catch (error) {
     console.error('Error fetching user business:', error);
+    if (error instanceof Error) {
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
     return NextResponse.json(
-      { error: 'Failed to fetch user business' },
+      {
+        error: 'Failed to fetch user business',
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     );
   }

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import axios from 'axios';
 import { Breadcrumb } from '@/components/ui/breadcrumb';
 import { useSearchParams } from 'next/navigation';
-import { signIn, getSession } from 'next-auth/react';
+
 export default function EditUserRole() {
   const router = useRouter();
   const searchParams = useSearchParams();

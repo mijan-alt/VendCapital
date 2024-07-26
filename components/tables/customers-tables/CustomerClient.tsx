@@ -32,7 +32,8 @@ export const CustomerClient = () => {
       );
       if (res.status === 200) {
         console.log('response data', res.data);
-        const customersWithId = res.data.customer.map(
+
+        const customersWithId = res.data.customers.map(
           (customer: Customer, index: number) => ({
             ...customer,
             id: index

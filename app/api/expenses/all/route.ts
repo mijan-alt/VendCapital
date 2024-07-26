@@ -1,5 +1,3 @@
-// app/api/expenses/all/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToMongoDB } from '@/utils/db';
 import { Expense } from '@/models/Expense';
@@ -15,11 +13,28 @@ export async function GET(req: NextRequest) {
 
     await connectToMongoDB();
 
-    const expenses = await Expense.find({ createdBy: session.user.id }).sort({
-      createdAt: -1
-    });
+    const searchParams = req.nextUrl.searchParams;
+    const page: number = parseInt(searchParams.get('page') || '1');
+    const limit: number = parseInt(searchParams.get('perPage') || '10');
 
-    return NextResponse.json(expenses, { status: 200 });
+    const count = await Expense.countDocuments({ createdBy: session.user.id });
+
+    const totalPages = Math.ceil(count / limit);
+    const skip = (page - 1) * limit;
+    const expenses = await Expense.find({ createdBy: session.user.id })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    return NextResponse.json(
+      {
+        expenses: expenses,
+        totalPages,
+        currentPage: page,
+        count
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Error fetching expenses:', error);
     return NextResponse.json(

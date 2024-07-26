@@ -15,49 +15,11 @@ export type User = {
 
 export type Expense = {
   id: number;
-  reference: number;
+  _id: string;
   date: string;
   amount: number;
   category: string;
 };
-
-export const expenses: Expense[] = [
-  {
-    id: 1,
-    reference: 8756211,
-    date: '12.4.2023',
-    amount: 20000,
-    category: 'fashion'
-  },
-  {
-    id: 2,
-    reference: 8756212,
-    date: '13.4.2023',
-    amount: 15000,
-    category: 'electronics'
-  },
-  {
-    id: 3,
-    reference: 8756213,
-    date: '14.4.2023',
-    amount: 10000,
-    category: 'groceries'
-  },
-  {
-    id: 4,
-    reference: 8756214,
-    date: '15.4.2023',
-    amount: 5000,
-    category: 'transportation'
-  },
-  {
-    id: 5,
-    reference: 8756215,
-    date: '16.4.2023',
-    amount: 25000,
-    category: 'utilities'
-  }
-];
 
 export type Employee = {
   id: number;

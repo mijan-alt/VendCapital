@@ -1,30 +1,26 @@
 'use server';
 import { NextResponse } from 'next/server';
-
 import Customer from '@/models/Customer'; // Adjust the path as necessary
 import { connectToMongoDB } from '@/utils/db.js';
+import { auth } from '@/auth';
 
 export const POST = async (request: Request) => {
-  const data = await request.json();
-
-  console.log(data);
-
   try {
-    console.log('in the try block');
-    await connectToMongoDB();
+    const session = await auth();
 
-    // Check if a customer with the same email or id already exists
-    const existingCustomer = await Customer.findOne({
-      email: data.email
-    });
-    if (existingCustomer) {
-      return new Response('already existing', { status: 400 });
+    if (!session || !session.user.id) {
+      return new Response('unauthorized');
     }
 
-    const newCustomer = new Customer({
-      ...data
-    });
+    await connectToMongoDB();
 
+    const data = await request.json();
+
+    const newCustomer = new Customer({
+      ...data,
+      createdBy: session.user.id
+    });
+    console.log(newCustomer);
     await newCustomer.save();
     return new Response('Customer added succesfully', { status: 200 });
   } catch (error) {

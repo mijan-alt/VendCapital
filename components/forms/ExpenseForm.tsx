@@ -33,6 +33,8 @@ type ExpenseFormValue = z.infer<typeof formSchema>;
 export default function ExpenseForm() {
   const [loading, setLoading] = useState(false);
 
+  const [expenses, setExpenses] = useState(null);
+
   const defaultValues = {
     description: '',
     amount: '',
@@ -47,7 +49,7 @@ export default function ExpenseForm() {
   const onSubmit = async (data: ExpenseFormValue) => {
     try {
       setLoading(true);
-      const response = await axios.post('/api/expenses', {
+      const response = await axios.post('/api/expense', {
         ...data,
         amount: parseFloat(data.amount)
       });

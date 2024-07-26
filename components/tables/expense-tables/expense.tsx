@@ -7,24 +7,49 @@ import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { columns } from './columns';
 import { Expense } from '@/constants/data';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-interface ExpenseClientProps {
-  data: Expense[];
-}
-
-export const ExpenseClient: React.FC<ExpenseClientProps> = ({ data }) => {
-  const breadcrumbItems = [
-    { title: 'Dashboard', link: '/dashboard' },
-    { title: 'Expense', link: '/dashboard/expenses' },
-    { title: 'Expense', link: '/dashboard/expenses/new' }
-  ];
+export const ExpenseClient = () => {
   const router = useRouter();
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const perPage = 5;
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+
+  const fetchExpenses = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(
+        `/api/expenses/all?page=${page}&perPage=${perPage}`
+      );
+      if (res.status === 200) {
+        const modifiedExpense = res.data.expenses.map(
+          (expense: Expense, index: number) => ({
+            ...expense,
+            id: index
+          })
+        );
+        setExpenses(modifiedExpense);
+        setTotalPage(res.data.totalPages);
+        setCount(res.data.count);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('error');
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchExpenses();
+  }, []);
+
+  useEffect(() => {
+    fetchExpenses();
+  }, [page]);
 
   const nextPage = () => {
     console.log('hit nextpage');
@@ -54,7 +79,7 @@ export const ExpenseClient: React.FC<ExpenseClientProps> = ({ data }) => {
       <DataTable
         searchKey="name"
         columns={columns}
-        data={data}
+        data={expenses}
         previousPage={previousPage}
         nextPage={nextPage}
         totalPage={totalPage}

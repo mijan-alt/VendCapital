@@ -12,12 +12,14 @@ export interface ICustomer extends Document {
   name: string;
   email: string;
   phone: string;
+  createdBy: mongoose.Types.ObjectId;
 }
 
 const CustomerSchema = new mongoose.Schema<ICustomer>({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  phone: { type: String, required: true }
+  phone: { type: String, required: true },
+  createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
 const Customer: Model<ICustomer> =

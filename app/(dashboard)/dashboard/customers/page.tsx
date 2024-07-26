@@ -1,7 +1,5 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { CustomerClient } from '@/components/tables/customers-tables/CustomerClient';
-import axios from 'axios';
-import { useEffect } from 'react';
 
 const breadcrumbItems = [
   { title: 'Dashboard', link: '/dashboard' },

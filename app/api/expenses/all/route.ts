@@ -26,9 +26,15 @@ export async function GET(req: NextRequest) {
       .skip(skip)
       .limit(limit);
 
+    const formattedExpenses = expenses.map((expense) => ({
+      ...expense.toObject(),
+      createdAt: new Date(expense.createdAt).toLocaleDateString('en-GB'),
+      updatedAt: new Date(expense.updatedAt).toLocaleDateString('en-GB')
+    }));
+
     return NextResponse.json(
       {
-        expenses: expenses,
+        expenses: formattedExpenses,
         totalPages,
         currentPage: page,
         count

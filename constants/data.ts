@@ -16,7 +16,7 @@ export type User = {
 export type Expense = {
   id: number;
   _id: string;
-  date: string;
+  createdAt: string;
   amount: number;
   category: string;
 };

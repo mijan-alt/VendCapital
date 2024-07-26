@@ -25,11 +25,11 @@ export const columns: ColumnDef<Expense>[] = [
     enableHiding: false
   },
   {
-    accessorKey: 'reference',
+    accessorKey: '_id',
     header: 'REFERENCE'
   },
   {
-    accessorKey: 'date',
+    accessorKey: 'createdAt',
     header: 'DATE'
   },
   {

@@ -2,10 +2,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToMongoDB } from '@/utils/db';
-import User from '@/models/User';
 import { Business } from '@/models/Business';
 import { auth } from '@/auth';
-import mongoose from 'mongoose';
 
 export async function GET(req: NextRequest) {
   try {
@@ -18,22 +16,17 @@ export async function GET(req: NextRequest) {
 
     await connectToMongoDB();
 
-    // Ensure both models are registered
-    mongoose.model('User');
-    mongoose.model('Business');
+    // // Ensure both models are registered
+    // mongoose.model('User');
+    // mongoose.model('Business');
 
-    const user = await User.findById(session.user.id).populate('business');
-    console.log('user before conditional', user);
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    const business = await Business.findOne({ user: session.user.id });
+
+    if (!business) {
+      return NextResponse.json({ message: 'No business yet' }, { status: 404 });
     }
 
-    console.log('user', user);
-
-    return NextResponse.json(
-      { business: user.business || null },
-      { status: 200 }
-    );
+    return NextResponse.json(business, { status: 200 });
   } catch (error) {
     console.error('Error fetching user business:', error);
     if (error instanceof Error) {

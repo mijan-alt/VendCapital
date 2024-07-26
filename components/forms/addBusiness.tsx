@@ -16,6 +16,7 @@ import * as z from 'zod';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 import axios from 'axios';
 import { useEffect } from 'react';
+import LoadingBusinessForm from '../loaders/LoadingBusinessForm';
 
 const formSchema = z.object({
   logo: z.string().optional(),
@@ -50,12 +51,12 @@ export default function BusinessForm() {
       try {
         setLoading(true);
         const response = await axios.get('/api/users/business');
-        if (response.status === 200 && response.data.business) {
-          form.reset(response.data.business);
-          console.log(response.data.business);
-          setBusinessId(response.data.business._id);
+        if (response.status === 200) {
+          form.reset(response.data);
+          console.log(response.data);
+          setBusinessId(response.data._id);
           setIsReadOnly(true);
-        } else if (response.status === 200 && !response.data.business) {
+        } else if (response.status === 404) {
           // User doesn't have a business yet
           setIsReadOnly(false);
         } else {
@@ -77,7 +78,7 @@ export default function BusinessForm() {
     };
 
     fetchUserBusiness();
-  }, [form]);
+  }, []);
 
   const onSubmit = async (data: BusinessFormValue) => {
     console.log(data);
@@ -149,118 +150,126 @@ export default function BusinessForm() {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-2"
-        >
-          <FormField
-            control={form.control}
-            name="logo"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Logo URL (Optional)</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="Enter logo URL..."
-                    readOnly={isReadOnly}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="address"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Address</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="Enter business address..."
-                    readOnly={isReadOnly}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="accountNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Account Number</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="Enter account number..."
-                    readOnly={isReadOnly}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="accountName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Account Name</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="Enter account name..."
-                    readOnly={isReadOnly}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="bankName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Bank Name</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="Enter bank name..."
-                    readOnly={isReadOnly}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        {loading ? (
+          <LoadingBusinessForm />
+        ) : (
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full space-y-2"
+          >
+            <FormField
+              control={form.control}
+              name="logo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Logo URL (Optional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter logo URL..."
+                      readOnly={isReadOnly}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter business address..."
+                      readOnly={isReadOnly}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="accountNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Account Number</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter account number..."
+                      readOnly={isReadOnly}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="accountName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Account Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter account name..."
+                      readOnly={isReadOnly}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="bankName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bank Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter bank name..."
+                      readOnly={isReadOnly}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <div className="flex justify-between">
-            {isReadOnly ? (
-              <Button onClick={handleEdit} type="button">
-                Edit
-              </Button>
-            ) : (
-              <>
-                <Button onClick={handleCancel} type="button" variant="outline">
-                  Cancel
+            <div className="flex justify-between">
+              {isReadOnly ? (
+                <Button onClick={handleEdit} type="button">
+                  Edit
                 </Button>
-                <Button disabled={loading} type="submit">
-                  {businessId ? 'Update Business' : 'Add Business'}
-                </Button>
-              </>
-            )}
-          </div>
-        </form>
+              ) : (
+                <>
+                  <Button
+                    onClick={handleCancel}
+                    type="button"
+                    variant="outline"
+                  >
+                    Cancel
+                  </Button>
+                  <Button disabled={loading} type="submit">
+                    {businessId ? 'Update Business' : 'Add Business'}
+                  </Button>
+                </>
+              )}
+            </div>
+          </form>
+        )}
       </Form>
     </>
   );

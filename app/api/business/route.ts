@@ -20,6 +20,18 @@ export async function POST(req: NextRequest) {
     // Parse the request body
     const body = await req.json();
 
+    const isBusinessExisting = await Business.findOne({
+      user: session.user.id
+    });
+    if (isBusinessExisting) {
+      return NextResponse.json(
+        {
+          message: 'A business is already associated with this account'
+        },
+        { status: 409 }
+      );
+    }
+
     // Create a new business document
     const newBusiness = new Business({
       logo: body.logo,

@@ -6,7 +6,6 @@ import NextTopLoader from 'nextjs-toploader';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { auth, handlers } from '@/auth';
-import { LoadingProvider } from '@/context/LoadingContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,16 +24,12 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} overflow-hidden`}>
-        <LoadingProvider>
-          <NextTopLoader showSpinner={false} />
-          <Providers session={session}>
-            <Toaster />
-            {children}
-          </Providers>
-        </LoadingProvider>
+        <NextTopLoader showSpinner={false} />
+        <Providers session={session}>
+          <Toaster />
+          {children}
+        </Providers>
       </body>
     </html>
   );
 }
-
-export const runtime = 'nodejs'; // 'nodejs' (default) | 'edge'

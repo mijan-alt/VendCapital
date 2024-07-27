@@ -86,10 +86,5 @@ const ProductSchema = new mongoose.Schema(
   }
 );
 
-// Virtual for product URL
-ProductSchema.virtual('url').get(function () {
-  return `/product/${this._id}`;
-});
-
 export default mongoose.models.Product ||
   mongoose.model('Product', ProductSchema);

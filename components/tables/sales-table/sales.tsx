@@ -13,7 +13,7 @@ interface SalesProps {
   data: Invoice[];
 }
 
-export const Sales: React.FC<SalesProps> = ({ data }) => {
+export const Sales: React.FC<SalesProps> = () => {
   const router = useRouter();
 
   return (
@@ -28,7 +28,16 @@ export const Sales: React.FC<SalesProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      <DataTable searchKey="name" columns={columns} data={data} />
+      {/* <DataTable
+        searchKey="name"
+        columns={columns}
+        data={expenses}
+        previousPage={previousPage}
+        nextPage={nextPage}
+        totalPage={totalPage}
+        count={count}
+        page={page}
+        loading={loading} /> */}
     </>
   );
 };

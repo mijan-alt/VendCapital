@@ -2,8 +2,6 @@
 // import CredentialProvider from 'next-auth/providers/credentials';
 // import GoogleProvider from 'next-auth/providers/google';
 // import bcrypt from 'bcryptjs';
-// import User from './models/User';
-// import { connectToMongoDB } from '@/utils/db.js';
 
 // const authConfig: NextAuthConfig = {
 //   providers: [
@@ -25,17 +23,22 @@
 
 //       async authorize(credentials): Promise<any> {
 //         const { email, password } = credentials;
-
 //         try {
-//           await connectToMongoDB();
-//           let user = await User.findOne({ email });
-
+//           const response = await fetch(
+//             `/app/api/getuser`,
+//             {
+//               method: 'POST',
+//               body: JSON.stringify({ email }),
+//               headers: { 'Content-Type': 'application/json' }
+//             }
+//           );
+//           if (!response.ok) throw new Error('Failed to fetch user');
+//           const user = await response.json();
 //           if (user) {
 //             const isPasswordCorrect = await bcrypt.compare(
 //               password as string,
 //               user.password as string
 //             );
-
 //             if (isPasswordCorrect) {
 //               return user;
 //             }
@@ -62,25 +65,23 @@
 //         return true;
 //       }
 
-//       if (account?.provider === 'google' && profile) {
+//       if (account?.provider == 'google' && profile) {
 //         try {
-//           await connectToMongoDB();
-//           // CHECK IF A USER ALREADY EXISTS
-//           const userExists = await User.findOne({
-//             email: profile.email
-//           });
-
-//           // IF NOT, CREATE A USER
-//           if (!userExists) {
-//             await User.create({
-//               email: profile.email,
-//               username: profile.name,
-//               firstName: profile.given_name,
-//               lastName: profile.family_name,
-//               image: profile.picture,
-//               role: 'user'
-//             });
-//           }
+//           const response = await fetch(
+//             '/app/api/getuser/google-signin',
+//             {
+//               method: 'POST',
+//               body: JSON.stringify({
+//                 email: profile.email,
+//                 name: profile.name,
+//                 given_name: profile.given_name,
+//                 family_name: profile.family_name,
+//                 picture: profile.picture
+//               }),
+//               headers: { 'Content-Type': 'application/json' }
+//             }
+//           );
+//           if (!response.ok) throw new Error('Failed to process Google sign-in');
 //           return true;
 //         } catch (error) {
 //           console.log('sign in error', error);
@@ -94,22 +95,18 @@
 //     async jwt({ token, user, account, profile }) {
 //       try {
 //         if (user) {
-//           // If using Google sign-in and first sign-in
 //           if (account?.provider === 'google' && profile) {
-//             await connectToMongoDB();
-//             let dbUser = await User.findOne({ email: profile.email });
+//             const response = await fetch(
+//               '/app/api/getuser/get-or-create',
+//               {
+//                 method: 'POST',
+//                 body: JSON.stringify({ email: profile.email }),
+//                 headers: { 'Content-Type': 'application/json' }
+//               }
+//             );
+//             if (!response.ok) throw new Error('Failed to get or create user');
+//             const dbUser = await response.json();
 
-//             if (!dbUser) {
-//               await dbUser.create({
-//                 email: profile.email,
-//                 username: profile.name,
-//                 firstName: profile.given_name,
-//                 lastName: profile.family_name,
-//                 image: profile.picture,
-//                 role:
-//                   profile.email === process.env.ADMIN_EMAIL ? 'admin' : 'user'
-//               });
-//             }
 //             token.id = dbUser._id.toString();
 //             token.role = dbUser.role;
 //             token.firstName = dbUser.firstName;
@@ -117,10 +114,18 @@
 //             token.username = dbUser.username;
 //           }
 
-//           // For credentials sign-in
 //           if (account?.provider === 'credentials') {
-//             await connectToMongoDB();
-//             let dbUser = await User.findOne({ email: user.email });
+//             const response = await fetch(
+//               `${process.env.NEXTAUTH_URL}api/getuser/get`,
+//               {
+//                 method: 'POST',
+//                 body: JSON.stringify({ email: user.email }),
+//                 headers: { 'Content-Type': 'application/json' }
+//               }
+//             );
+//             if (!response.ok) throw new Error('Failed to get user');
+//             const dbUser = await response.json();
+
 //             token.id = dbUser._id.toString();
 //             token.role = user.role;
 //             token.username = dbUser.username;
@@ -128,12 +133,17 @@
 //             token.lastName = dbUser.lastName;
 //           }
 //         } else {
-//           // Subsequent requests
-//           await connectToMongoDB();
-//           const dbUser = await User.findOne({ email: token.email });
-
-//           if (dbUser) {
-//             token.id = dbUser._id.toString(); // Add user ID to token
+//           const response = await fetch(
+//             '/app/api/getuser/get',
+//             {
+//               method: 'POST',
+//               body: JSON.stringify({ email: token.email }),
+//               headers: { 'Content-Type': 'application/json' }
+//             }
+//           );
+//           if (response.ok) {
+//             const dbUser = await response.json();
+//             token.id = dbUser._id.toString();
 //             token.role = dbUser.role;
 //             token.firstName = dbUser.firstName;
 //             token.lastName = dbUser.lastName;

@@ -53,7 +53,7 @@ export default function LoginForm() {
       const response = await signIn('credentials', {
         email: data.email,
         password: data.password,
-        redirect: true, // I want to redirect automatically
+        redirect: false, // I want to redirect automatically
         callbackUrl: `${baseUrl}/dashboard`
       });
 

@@ -24,7 +24,7 @@ export async function getOrCreateGoogleUser(profile: any) {
       firstName: profile.given_name,
       lastName: profile.family_name,
       image: profile.picture,
-      role: profile.email === process.env.ADMIN_EMAIL ? 'admin' : 'user'
+      role: profile.email === process.env.ADMIN_EMAIL ? 'Admin' : 'user'
     });
   }
   return user;

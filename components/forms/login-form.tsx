@@ -28,6 +28,8 @@ const formSchema = z.object({
 
 type UserFormValue = z.infer<typeof formSchema>;
 
+const baseUrl = process.env.AUTH_URL;
+
 export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -51,8 +53,8 @@ export default function LoginForm() {
       const response = await signIn('credentials', {
         email: data.email,
         password: data.password,
-        redirect: false, // I want to redirect manually
-        callbackUrl: callbackUrl ?? '/dashboard'
+        redirect: true, // I want to redirect automatically
+        callbackUrl: `${baseUrl}/dashboard`
       });
 
       console.log('my response', response);
@@ -120,7 +122,8 @@ export default function LoginForm() {
             </button>
           )
         });
-        router.push(response?.url || '/dashboard');
+
+        router.push(`${baseUrl}/dashboard`);
       }
     } catch (error) {
       console.log(error);

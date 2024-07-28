@@ -1,29 +1,21 @@
-'use server';
-// app/api/user/route.ts
 import { NextResponse } from 'next/server';
 import { connectToMongoDB } from '@/utils/db.js';
 import User from '@/models/User';
 import { type NextRequest } from 'next/server';
+import { auth } from '@/auth';
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { email: string } }
-) {
-  console.log(params.email);
-  const { email } = params;
-  //   if (!email) {
-  //     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
-  //   }
+export async function GET(request: NextRequest) {
+  const session = await auth();
 
-  console.log('email', email);
+  if (!session) {
+    return;
+  }
+
   try {
     await connectToMongoDB();
-    const user = await User.findOne({ email });
-
-    console.log('email', email);
+    const user = await User.findOne({ _id: session.user.id });
 
     if (!user) {
-      console.log('email', email);
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
@@ -36,7 +28,6 @@ export async function GET(
         lastName: user.lastName,
         username: isFirstNameAndLastName ? usernames : user.username,
         email: user.email,
-        business: user.business,
         image: user.image,
         role: user.role
       },
@@ -51,21 +42,18 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { email: string } }
-) {
-  const { email } = params;
-  const body = await request.json();
+export async function PUT(request: NextRequest) {
+  const session = await auth();
 
-  if (!email) {
-    return NextResponse.json({ error: 'Email is required' }, { status: 400 });
+  if (!session) {
+    return;
   }
+  const body = await request.json();
 
   try {
     await connectToMongoDB();
     const user = await User.findOneAndUpdate(
-      { email },
+      { _id: session.user.id },
       { $set: body },
       { new: true }
     );

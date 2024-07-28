@@ -28,13 +28,15 @@ import {
   User,
   User2Icon,
   UserX2Icon,
-  X
+  X,
+  LogOut
 } from 'lucide-react';
 import { Box } from 'lucide-react';
 import { TrendingUp } from 'lucide-react';
 import { Users } from 'lucide-react';
 import { Banknote } from 'lucide-react';
 import { BriefcaseIcon } from 'lucide-react';
+
 export type Icon = LucideIcon;
 
 export const Icons = {
@@ -69,6 +71,7 @@ export const Icons = {
   customers: Users,
   sales: Banknote,
   business: BriefcaseIcon,
+  LogOut: LogOut,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

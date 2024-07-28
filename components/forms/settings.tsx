@@ -22,7 +22,6 @@ export default function UserProfileSettings() {
     lastName: '',
     username: '',
     email: '',
-    business: '',
     image: '',
     role: ''
   });
@@ -32,19 +31,17 @@ export default function UserProfileSettings() {
   const [newPicture, setNewPicture] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (session?.user?.email) {
-      setImageUrl(`/api/picture/${session.user.email}`);
-    }
-  }, [session?.user?.email]);
+  // useEffect(() => {
+  //   if (session?.user?.email) {
+  //     setImageUrl(`/api/picture/${session.user.email}`);
+  //   }
+  // }, [session?.user?.email]);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          `/api/currentuser/${session.user.email}`
-        );
+        const response = await axios.get(`/api/currentuser`);
 
         if (response.status === 200) {
           setUser(response.data);
@@ -58,10 +55,8 @@ export default function UserProfileSettings() {
       }
     };
 
-    if (session?.user.email) {
-      fetchUserData();
-    }
-  }, [session?.user?.email]);
+    fetchUserData();
+  }, []);
 
   console.log(user);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,18 +87,12 @@ export default function UserProfileSettings() {
 
       const updatedUser = { ...user };
 
-      const response = await axios.put(
-        `/api/user/${session.user.email}`,
-        updatedUser
-      );
+      const response = await axios.put(`/api/currentuser`, updatedUser);
 
       if (response.status === 200) {
         setUser(response.data);
         setIsEditing(false);
         setNewPicture(null);
-        setImageUrl(
-          `/api/picture/${session.user.email}/picture?${new Date().getTime()}`
-        );
       }
 
       //update the session
@@ -220,19 +209,6 @@ export default function UserProfileSettings() {
               />
             </div>
 
-            <div className="mb-4">
-              <label className="mb-2 block text-sm font-bold text-gray-700">
-                Business
-              </label>
-              <input
-                type="text"
-                name="business"
-                value={user?.business}
-                onChange={handleInputChange}
-                readOnly={!isEditing}
-                className="w-full rounded-lg border px-3 py-2 text-sm text-muted-foreground"
-              />
-            </div>
             <div className="mb-4">
               <label className="mb-2 block text-sm font-bold text-gray-700">
                 role

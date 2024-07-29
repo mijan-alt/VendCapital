@@ -113,15 +113,16 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
       } else {
         const res = await axios.post(`/api/products/create-product`, data);
-        // console.log("product", res);
+        if (res.status === 201) {
+          toast({
+            variant: 'default',
+            title: 'Success',
+            description: 'Product has been uploaded.'
+          });
+          router.refresh();
+          router.push(`/dashboard/products`);
+        }
       }
-      router.refresh();
-      router.push(`/dashboard/products`);
-      toast({
-        variant: 'destructive',
-        title: 'Uh oh! Something went wrong.',
-        description: 'There was a problem with your request.'
-      });
     } catch (error: any) {
       toast({
         variant: 'destructive',

@@ -21,14 +21,7 @@ const ProductSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      required: [true, 'Please specify a category for this product'],
-      enum: ['Electronics', 'Clothing', 'Food', 'Books', 'Other'] // Add or modify categories as needed
-    },
-    sku: {
-      type: String,
-      required: [true, 'Please provide a SKU'],
-      unique: true,
-      trim: true
+      required: [true, 'Please specify a category for this product']
     },
     quantityInStock: {
       type: Number,
@@ -45,17 +38,6 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: false
     },
-    weight: {
-      value: {
-        type: Number,
-        required: false
-      },
-      unit: {
-        type: String,
-        enum: ['g', 'kg', 'lb', 'oz'],
-        required: false
-      }
-    },
     isActive: {
       type: Boolean,
       default: true
@@ -63,11 +45,6 @@ const ProductSchema = new mongoose.Schema(
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true
-    },
-    business: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Business',
       required: true
     }
   },

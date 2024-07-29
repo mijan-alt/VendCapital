@@ -31,6 +31,7 @@ import { useToast } from '../ui/use-toast';
 // import FileUpload from '../file-upload';
 import FileUpload from '../file-upload';
 import { UploadFileResponse } from 'uploadthing/client';
+import axios from 'axios';
 
 const ImgSchema = z.object({
   fileName: z.string(),
@@ -61,10 +62,7 @@ const formSchema = z.object({
     .number()
     .min(0, { message: 'Quantity must be 0 or greater' }),
   brand: z.string().optional(),
-  weight: z.object({
-    value: z.number().optional(),
-    unit: z.enum(['g', 'kg', 'lb', 'oz']).optional()
-  }),
+
   isActive: z.boolean().default(true)
 });
 
@@ -97,7 +95,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         description: '',
         price: 0,
         imgUrl: [],
-        category: ''
+        category: '',
+        quantityInStock: 0,
+        brand: ''
       };
 
   const form = useForm<ProductFormValues>({
@@ -108,10 +108,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const onSubmit = async (data: ProductFormValues) => {
     try {
       setLoading(true);
+      console.log('product data', data);
       if (initialData) {
         // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
       } else {
-        // const res = await axios.post(`/api/products/create-product`, data);
+        const res = await axios.post(`/api/products/create-product`, data);
         // console.log("product", res);
       }
       router.refresh();

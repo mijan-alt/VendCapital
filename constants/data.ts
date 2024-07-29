@@ -68,7 +68,7 @@ export const navItems: NavItem[] = [
   },
   {
     title: 'Products',
-    href: '/dashboard/profile',
+    href: '/dashboard/products',
     icon: 'product',
     label: 'product'
   },

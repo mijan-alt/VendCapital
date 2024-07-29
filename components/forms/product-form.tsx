@@ -56,7 +56,16 @@ const formSchema = z.object({
     .string()
     .min(3, { message: 'Product description must be at least 3 characters' }),
   price: z.coerce.number(),
-  category: z.string().min(1, { message: 'Please select a category' })
+  category: z.string().min(1, { message: 'Please select a category' }),
+  quantityInStock: z.coerce
+    .number()
+    .min(0, { message: 'Quantity must be 0 or greater' }),
+  brand: z.string().optional(),
+  weight: z.object({
+    value: z.number().optional(),
+    unit: z.enum(['g', 'kg', 'lb', 'oz']).optional()
+  }),
+  isActive: z.boolean().default(true)
 });
 
 type ProductFormValues = z.infer<typeof formSchema>;
@@ -260,6 +269,53 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                     </SelectContent>
                   </Select>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="quantityInStock"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Quantity in Stock</FormLabel>
+                  <FormControl>
+                    <Input type="number" disabled={loading} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="brand"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Brand</FormLabel>
+                  <FormControl>
+                    <Input disabled={loading} placeholder="Brand" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="isActive"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Active</FormLabel>
+                    <FormDescription>
+                      This product will appear in the store
+                    </FormDescription>
+                  </div>
                 </FormItem>
               )}
             />

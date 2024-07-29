@@ -56,6 +56,16 @@ const ProductSchema = new mongoose.Schema(
         required: false
       }
     },
+    dimensions: {
+      length: { type: Number, required: false },
+      width: { type: Number, required: false },
+      height: { type: Number, required: false },
+      unit: {
+        type: String,
+        enum: ['cm', 'in'],
+        required: false
+      }
+    },
     isActive: {
       type: Boolean,
       default: true

@@ -8,13 +8,33 @@ import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { columns } from './columns';
 import { Invoice } from '@/constants/data';
+import { useState, useEffect } from 'react';
 
 interface SalesProps {
   data: Invoice[];
 }
 
-export const Sales: React.FC<SalesProps> = () => {
+export const Sales = () => {
   const router = useRouter();
+  const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const perPage = 5;
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [invoice, setInvoice] = useState<Invoice[]>([]);
+
+  const nextPage = () => {
+    console.log('hit nextpage');
+    if (page < totalPage) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const previousPage = () => {
+    if (page > 1) {
+      setPage((prev) => prev - 1);
+    }
+  };
 
   return (
     <>
@@ -22,22 +42,23 @@ export const Sales: React.FC<SalesProps> = () => {
         <Heading title={`Sales`} description="" />
         <Button
           className="text-xs md:text-sm"
-          onClick={() => router.push(`/dashboard/user/new`)}
+          onClick={() => router.push(`/dashboard/sales/create`)}
         >
           <Plus className="mr-2 h-4 w-4" /> Add sales
         </Button>
       </div>
       <Separator />
-      {/* <DataTable
+      <DataTable
         searchKey="name"
         columns={columns}
-        data={expenses}
+        data={invoices}
         previousPage={previousPage}
         nextPage={nextPage}
         totalPage={totalPage}
         count={count}
         page={page}
-        loading={loading} /> */}
+        loading={loading}
+      />
     </>
   );
 };

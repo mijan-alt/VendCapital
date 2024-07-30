@@ -215,37 +215,6 @@ export type Customer = {
   phone: string;
 };
 
-// export const customers: Customer[] = [
-//   {
-
-//     name: 'Awajimijan',
-//     email: 'assh@gmail.com',
-//     phone: '08070321836'
-//   },
-//   {
-
-//     name: 'AnotherName',
-//     email: 'another@gmail.com',
-//     phone: '08061234567'
-//   },
-//   {
-
-//     name: 'ExampleName',
-//     email: 'example@gmail.com',
-//     phone: '08069876543'
-//   },
-//   {
-
-//     name: 'TestUser',
-//     email: 'testuser@gmail.com',
-//     phone: '08060493827'
-//   },
-//   {
-//     name: 'JohnDoe',
-//     email: 'johndoe@gmail.com',
-//     phone: '08065543210'
-//   }
-// ];
 export interface Actions {
   previousPage: () => void;
   nextPage: () => void;

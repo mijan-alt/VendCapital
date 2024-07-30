@@ -49,6 +49,10 @@ export const columns: ColumnDef<Invoice>[] = [
     header: 'STATUS'
   },
   {
+    accessorKey: 'product',
+    header: 'Product'
+  },
+  {
     id: 'actions',
     cell: ({ row }) => <CellAction data={row.original} />
   }

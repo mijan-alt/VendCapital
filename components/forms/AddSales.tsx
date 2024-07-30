@@ -24,8 +24,8 @@ import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 import axios from 'axios';
 
 type Sale = {
-  customerId: string;
-  productId: string;
+  customer: string;
+  product: string;
   quantity: number;
   unitPrice: number;
   totalPrice: number;
@@ -50,8 +50,8 @@ type Product = {
 };
 
 const formSchema = z.object({
-  customerId: z.string().min(1, { message: 'Please select a customer.' }),
-  productId: z.string().min(1, { message: 'Please select a product.' }),
+  customer: z.string().min(1, { message: 'Please select a customer.' }),
+  product: z.string().min(1, { message: 'Please select a product.' }),
   quantity: z.number().min(1, { message: 'Quantity must be at least 1.' }),
   unitPrice: z.number().min(0, { message: 'Price cannot be negative.' }),
   totalPrice: z.number().min(0, { message: 'Total price cannot be negative.' }),
@@ -68,8 +68,8 @@ export default function RecordSale() {
   const form = useForm<Sale>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      customerId: '',
-      productId: '',
+      customer: '',
+      product: '',
       quantity: 1,
       unitPrice: 0,
       totalPrice: 0,
@@ -155,7 +155,7 @@ export default function RecordSale() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
-            name="customerId"
+            name="customer"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Customer</FormLabel>
@@ -192,7 +192,7 @@ export default function RecordSale() {
 
           <FormField
             control={form.control}
-            name="productId"
+            name="product"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Product</FormLabel>

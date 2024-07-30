@@ -50,7 +50,7 @@ export const columns: ColumnDef<Invoice>[] = [
   },
   {
     accessorKey: 'product',
-    header: 'Product'
+    header: 'PRODUCT'
   },
   {
     id: 'actions',

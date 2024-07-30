@@ -22,7 +22,7 @@ export const Sales = () => {
   const perPage = 5;
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [invoice, setInvoice] = useState<Invoice[]>([]);
+  const [allSales, setAllSales] = useState<Invoice[] | null>(null);
 
   const fetchSales = async () => {
     try {
@@ -41,9 +41,15 @@ export const Sales = () => {
             email: sale.customer.email,
             amount: sale.totalPrice,
             date: sale.createdAt,
-            status: sale.status
+            status: sale.status,
+            product: sale.product.name
           };
         });
+
+        setAllSales(salesdata);
+        setTotalPage(res.data.totalPages);
+        setCount(res.data.count);
+        setLoading(false);
       }
     } catch (error) {
       console.error('error');
@@ -83,7 +89,7 @@ export const Sales = () => {
       <DataTable
         searchKey="name"
         columns={columns}
-        data={invoices}
+        data={allSales}
         previousPage={previousPage}
         nextPage={nextPage}
         totalPage={totalPage}

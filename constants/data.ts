@@ -112,6 +112,7 @@ export type Invoice = {
   date: string;
   amount: number;
   status: string;
+  product: string;
 };
 
 export const invoices: Invoice[] = [
@@ -122,7 +123,8 @@ export const invoices: Invoice[] = [
     reference: 'A09383',
     date: '12.4.2023',
     amount: 200000,
-    status: 'paid'
+    status: 'paid',
+    product: 'watch'
   },
   {
     id: 2,
@@ -131,7 +133,8 @@ export const invoices: Invoice[] = [
     reference: 'B48274',
     date: '15.5.2023',
     amount: 150000,
-    status: 'unpaid'
+    status: 'unpaid',
+    product: 'watch'
   },
   {
     id: 3,
@@ -140,7 +143,8 @@ export const invoices: Invoice[] = [
     reference: 'C93847',
     date: '18.6.2023',
     amount: 250000,
-    status: 'paid'
+    status: 'paid',
+    product: 'watch'
   },
   {
     id: 4,
@@ -149,7 +153,8 @@ export const invoices: Invoice[] = [
     reference: 'D18274',
     date: '20.7.2023',
     amount: 300000,
-    status: 'pending'
+    status: 'pending',
+    product: 'watch'
   },
   {
     id: 5,
@@ -158,7 +163,8 @@ export const invoices: Invoice[] = [
     reference: 'E92847',
     date: '22.8.2023',
     amount: 180000,
-    status: 'paid'
+    status: 'paid',
+    product: 'watch'
   },
   {
     id: 6,
@@ -167,7 +173,8 @@ export const invoices: Invoice[] = [
     reference: 'F48374',
     date: '25.9.2023',
     amount: 220000,
-    status: 'unpaid'
+    status: 'unpaid',
+    product: 'watch'
   },
   {
     id: 7,
@@ -176,7 +183,8 @@ export const invoices: Invoice[] = [
     reference: 'G18474',
     date: '27.10.2023',
     amount: 270000,
-    status: 'paid'
+    status: 'paid',
+    product: 'watch'
   },
   {
     id: 8,
@@ -185,7 +193,8 @@ export const invoices: Invoice[] = [
     reference: 'H72837',
     date: '30.11.2023',
     amount: 190000,
-    status: 'pending'
+    status: 'pending',
+    product: 'watch'
   },
   {
     id: 9,
@@ -194,7 +203,8 @@ export const invoices: Invoice[] = [
     reference: 'I84737',
     date: '2.12.2023',
     amount: 230000,
-    status: 'paid'
+    status: 'paid',
+    product: 'watch'
   },
   {
     id: 10,
@@ -203,7 +213,8 @@ export const invoices: Invoice[] = [
     reference: 'J38474',
     date: '5.1.2024',
     amount: 160000,
-    status: 'unpaid'
+    status: 'unpaid',
+    product: 'watch'
   }
 ];
 

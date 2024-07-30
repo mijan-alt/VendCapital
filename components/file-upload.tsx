@@ -10,8 +10,8 @@ import { OurFileRouter } from '@/app/api/uploadthing/core';
 
 interface ImageUploadProps {
   onChange?: any;
-  onRemove: (value: UploadFileResponse[]) => void;
-  value: UploadFileResponse[];
+  onRemove: (value: string[]) => void;
+  value: string[];
 }
 
 export default function FileUpload({
@@ -20,27 +20,26 @@ export default function FileUpload({
   value
 }: ImageUploadProps) {
   const { toast } = useToast();
-  const onDeleteFile = (key: string) => {
-    const files = value;
-    let filteredFiles = files.filter((item) => item.key !== key);
+  const onDeleteFile = (fileUrl: string) => {
+    const filteredFiles = value.filter((item) => item !== fileUrl);
     onRemove(filteredFiles);
   };
-  const onUpdateFile = (newFiles: UploadFileResponse[]) => {
-    onChange([...value, ...newFiles]);
+  const onUpdateFile = (newFiles: string[]) => {
+    onChange?.([...value, ...newFiles]);
   };
   return (
     <div>
       <div className="mb-4 flex items-center gap-4">
-        {!!value.length &&
-          value?.map((item) => (
+        {value.length > 0 &&
+          value?.map((fileUrl) => (
             <div
-              key={item.key}
+              key={fileUrl}
               className="relative h-[200px] w-[200px] overflow-hidden rounded-md"
             >
               <div className="absolute right-2 top-2 z-10">
                 <Button
                   type="button"
-                  onClick={() => onDeleteFile(item.key)}
+                  onClick={() => onDeleteFile(fileUrl)}
                   variant="destructive"
                   size="sm"
                 >
@@ -52,7 +51,7 @@ export default function FileUpload({
                   fill
                   className="object-cover"
                   alt="Image"
-                  src={item.fileUrl || ''}
+                  src={fileUrl}
                 />
               </div>
             </div>
@@ -78,9 +77,9 @@ export default function FileUpload({
             }}
             onClientUploadComplete={(res) => {
               // Do something with the response
-              const data: UploadFileResponse[] | undefined = res;
-              if (data) {
-                onUpdateFile(data);
+              if (res) {
+                const newFileUrls = res.map((file) => file.fileUrl);
+                onUpdateFile(newFileUrls);
               }
             }}
             onUploadError={(error: Error) => {

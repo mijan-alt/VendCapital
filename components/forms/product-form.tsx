@@ -1,6 +1,6 @@
 'use client';
 import * as z from 'zod';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Trash } from 'lucide-react';
@@ -32,24 +32,16 @@ import { useToast } from '../ui/use-toast';
 import FileUpload from '../file-upload';
 import { UploadFileResponse } from 'uploadthing/client';
 import axios from 'axios';
+import { AlertModal } from '../modal/alert-modal';
 
-const ImgSchema = z.object({
-  fileName: z.string(),
-  name: z.string(),
-  fileSize: z.number(),
-  size: z.number(),
-  fileKey: z.string(),
-  key: z.string(),
-  fileUrl: z.string(),
-  url: z.string()
-});
+const ImgSchema = z.string().url();
 
 export const IMG_MAX_LIMIT = 3;
 const formSchema = z.object({
   name: z
     .string()
     .min(3, { message: 'Product Name must be at least 3 characters' }),
-  imgUrl: z
+  images: z
     .array(ImgSchema)
     .max(IMG_MAX_LIMIT, { message: 'You can only add up to 3 images' })
     .min(1, { message: 'At least one image must be added.' }),
@@ -71,11 +63,13 @@ type ProductFormValues = z.infer<typeof formSchema>;
 interface ProductFormProps {
   initialData: any | null;
   categories: any;
+  productId?: string;
 }
 
 export const ProductForm: React.FC<ProductFormProps> = ({
   initialData,
-  categories
+  categories,
+  productId
 }) => {
   const params = useParams();
   const router = useRouter();
@@ -89,21 +83,39 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const action = initialData ? 'Save changes' : 'Create';
 
   const defaultValues = initialData
-    ? initialData
+    ? {
+        name: initialData.name ?? '',
+        description: initialData.description ?? '',
+        price: initialData.price ?? 0,
+        images: initialData.images ?? [],
+        category: initialData.category ?? '',
+        quantityInStock: initialData.quantityInStock ?? 0,
+        brand: initialData.brand ?? '',
+        isActive: initialData.isActive ?? true
+      }
     : {
         name: '',
         description: '',
         price: 0,
-        imgUrl: [],
+        images: [],
         category: '',
         quantityInStock: 0,
-        brand: ''
+        brand: '',
+        isActive: true
       };
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues
   });
+
+  useEffect(() => {
+    if (initialData) {
+      form.reset(initialData);
+    }
+  }, [initialData, form]);
+
+  console.log('my inital data', initialData);
 
   const onSubmit = async (data: ProductFormValues) => {
     try {
@@ -137,9 +149,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      //   await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
+      await axios.delete(`/api/products/single-product/${productId}`);
       router.refresh();
-      router.push(`/${params.storeId}/products`);
+      router.push(`/dashboard/products`);
     } catch (error: any) {
     } finally {
       setLoading(false);
@@ -147,16 +159,16 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     }
   };
 
-  const triggerImgUrlValidation = () => form.trigger('imgUrl');
+  const triggerImgUrlValidation = () => form.trigger('images');
 
   return (
     <>
-      {/* <AlertModal
+      <AlertModal
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={onDelete}
         loading={loading}
-      /> */}
+      />
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
@@ -178,15 +190,15 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         >
           <FormField
             control={form.control}
-            name="imgUrl"
+            name="images"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Images</FormLabel>
                 <FormControl>
                   <FileUpload
-                    onChange={field.onChange}
-                    value={field.value as UploadFileResponse[]}
-                    onRemove={field.onChange}
+                    onChange={(value: string[]) => field.onChange(value)}
+                    value={field.value as string[]}
+                    onRemove={(value: string[]) => field.onChange(value)}
                   />
                 </FormControl>
                 <FormMessage />

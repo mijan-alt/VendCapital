@@ -73,6 +73,9 @@ const ProductList = () => {
                 ))
               : products.map((product) => (
                   <article
+                    onClick={(e) =>
+                      router.push(`/dashboard/products/${product._id}`)
+                    }
                     className="relative cursor-pointer"
                     key={product._id}
                   >

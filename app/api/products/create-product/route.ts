@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       name,
       description,
       price,
-      imgUrl,
+      images,
       category,
       quantityInStock,
       brand,
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       !name ||
       !description ||
       !price ||
-      !imgUrl ||
+      !images ||
       !category ||
       quantityInStock === undefined
     ) {
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
       name,
       description,
       price,
-      images: imgUrl.map((img: any) => img.url),
+      images,
       category,
       quantityInStock,
       brand,

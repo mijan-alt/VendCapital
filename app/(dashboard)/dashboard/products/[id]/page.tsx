@@ -1,3 +1,4 @@
+'use client';
 import React, { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Breadcrumbs } from '@/components/breadcrumbs';
@@ -18,7 +19,7 @@ const EditProductPage = () => {
   useEffect(() => {
     // Fetch the product data if we are editing an existing product
     axios
-      .get(`/api/products/${id}`)
+      .get(`/api/products/single-product/${id}`)
       .then((response) => {
         setInitialData(response.data);
       })
@@ -44,6 +45,7 @@ const EditProductPage = () => {
             { _id: 'food', name: 'Food' }
           ]}
           initialData={initialData}
+          productId={id as string}
         />
       </div>
     </ScrollArea>

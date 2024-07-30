@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       quantityInStock,
       brand,
       isActive,
-      createdBy: session.user.id // Assuming the user object in the session has an id field
+      createdBy: session.user.id
     });
 
     await newProduct.save();

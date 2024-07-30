@@ -122,7 +122,19 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       setLoading(true);
       console.log('product data', data);
       if (initialData) {
-        // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
+        const res = await axios.put(
+          `/api/products/single-product/${productId}`,
+          data
+        );
+        if (res.status === 201) {
+          toast({
+            variant: 'default',
+            title: 'Success',
+            description: 'Editing complete.'
+          });
+          router.refresh();
+          router.push(`/dashboard/products`);
+        }
       } else {
         const res = await axios.post(`/api/products/create-product`, data);
         if (res.status === 201) {

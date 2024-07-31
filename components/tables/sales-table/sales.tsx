@@ -22,7 +22,7 @@ export const Sales = () => {
   const perPage = 5;
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [allSales, setAllSales] = useState<Invoice[] | null>(null);
+  const [allSales, setAllSales] = useState<Invoice[] | null>([]);
 
   const fetchSales = async () => {
     try {
@@ -40,7 +40,7 @@ export const Sales = () => {
             name: sale.customer.name,
             email: sale.customer.email,
             amount: sale.totalPrice,
-            date: sale.createdAt,
+            date: new Date(sale.createdAt).toLocaleDateString('en-GB'),
             status: sale.status,
             product: sale.product.name
           };

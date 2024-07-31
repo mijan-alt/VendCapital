@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import Sales from '@/models/Sales';
 import { connectToMongoDB } from '@/utils/db';
 import { auth } from '@/auth';
+import Customer from '@/models/Customer';
+import Product from '@/models/Product';
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,11 +18,8 @@ export async function GET(request: NextRequest) {
     const limit: number = parseInt(searchParams.get('perPage') || '10');
 
     const sales = await Sales.find({ createdBy: session.user.id })
-      .populate('customer', 'name email phone')
-      .populate(
-        'product',
-        'name description price category quantityInStock brand'
-      )
+      .populate('customer')
+      .populate('product')
       .skip((page - 1) * limit)
       .limit(limit)
       .exec();

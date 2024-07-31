@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import { MobileSidebar } from './mobile-sidebar';
 import { UserNav } from './user-nav';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Header() {
   return (
@@ -10,10 +11,12 @@ export default function Header() {
       <nav className="flex h-14 items-center justify-between px-4">
         <div className="hidden lg:block">
           <Link href={'/dashboard'} target="_blank">
-            <img
-              src="assets/images/business.png"
+            <Image
+              src="/assets/images/business.png"
               alt="logo"
               className="mr-2 h-[56px]"
+              width={200}
+              height={200}
             />
           </Link>
 

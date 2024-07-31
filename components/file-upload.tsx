@@ -1,12 +1,12 @@
 'use client';
-import { UploadDropzone } from '@uploadthing/react';
+import { UploadDropzone } from '@/utils/uploadthing';
 import { Trash } from 'lucide-react';
 import Image from 'next/image';
-import { UploadFileResponse } from 'uploadthing/client';
 import { IMG_MAX_LIMIT } from './forms/product-form';
 import { Button } from './ui/button';
 import { useToast } from './ui/use-toast';
 import { OurFileRouter } from '@/app/api/uploadthing/core';
+import { ClientUploadedFileData } from 'uploadthing/types';
 
 interface ImageUploadProps {
   onChange?: any;
@@ -59,7 +59,7 @@ export default function FileUpload({
       </div>
       <div>
         {value.length < IMG_MAX_LIMIT && (
-          <UploadDropzone<OurFileRouter>
+          <UploadDropzone
             className="ut-label:text-sm ut-allowed-content:ut-uploading:text-red-300 py-2 dark:bg-zinc-800"
             endpoint="imageUploader"
             config={{ mode: 'auto' }}
@@ -78,7 +78,7 @@ export default function FileUpload({
             onClientUploadComplete={(res) => {
               // Do something with the response
               if (res) {
-                const newFileUrls = res.map((file) => file.fileUrl);
+                const newFileUrls = res.map((file) => file.url);
                 onUpdateFile(newFileUrls);
               }
             }}

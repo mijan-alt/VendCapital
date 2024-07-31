@@ -17,7 +17,10 @@ import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 import axios from 'axios';
 import { useEffect } from 'react';
 import LoadingBusinessForm from '../loaders/LoadingBusinessForm';
-
+import { UploadButton } from '@/utils/uploadthing';
+import Image from 'next/image';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useSession } from 'next-auth/react';
 const formSchema = z.object({
   logo: z.string().optional(),
   address: z.string().min(1, 'Address is required'),
@@ -29,6 +32,7 @@ const formSchema = z.object({
 type BusinessFormValue = z.infer<typeof formSchema>;
 
 export default function BusinessForm() {
+  const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [businessId, setBusinessId] = useState<string | null>(null);
@@ -162,14 +166,34 @@ export default function BusinessForm() {
               name="logo"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Logo URL (Optional)</FormLabel>
+                  <FormLabel>Images</FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="Enter logo URL..."
-                      readOnly={isReadOnly}
-                      {...field}
-                    />
+                    <div className="flex gap-4 ">
+                      <Avatar className="h-[100px] w-[100px] object-cover">
+                        <AvatarImage
+                          src={field.value ?? ''}
+                          alt={session.user?.name ?? ''}
+                        />
+                        <AvatarFallback>
+                          {session.user?.name?.[0]}
+                        </AvatarFallback>
+                      </Avatar>
+
+                      {!isReadOnly && (
+                        <div className="">
+                          <UploadButton
+                            endpoint="imageUploader"
+                            onClientUploadComplete={(res) => {
+                              console.log('Files: ', res);
+                              field.onChange(res[0].url);
+                            }}
+                            onUploadError={(error: Error) => {
+                              alert(`ERROR! ${error.message}`);
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -16,10 +16,6 @@ export async function GET(req: NextRequest) {
 
     await connectToMongoDB();
 
-    // // Ensure both models are registered
-    // mongoose.model('User');
-    // mongoose.model('Business');
-
     const business = await Business.findOne({ user: session.user.id });
 
     if (!business) {
@@ -28,11 +24,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(business, { status: 200 });
   } catch (error) {
-    console.error('Error fetching user business:', error);
-    if (error instanceof Error) {
-      console.error('Error message:', error.message);
-      console.error('Error stack:', error.stack);
-    }
     return NextResponse.json(
       {
         error: 'Failed to fetch user business',

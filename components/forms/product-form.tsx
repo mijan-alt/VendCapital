@@ -30,7 +30,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '../ui/use-toast';
 // import FileUpload from '../file-upload';
 import FileUpload from '../file-upload';
-import { UploadFileResponse } from 'uploadthing/client';
 import axios from 'axios';
 import { AlertModal } from '../modal/alert-modal';
 

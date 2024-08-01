@@ -3,6 +3,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { CellAction } from './cell-action';
 import { Invoice } from '@/constants/data';
 import { Checkbox } from '@/components/ui/checkbox';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 export const columns: ColumnDef<Invoice>[] = [
   {
@@ -42,7 +43,10 @@ export const columns: ColumnDef<Invoice>[] = [
   },
   {
     accessorKey: 'amount',
-    header: 'AMOUNT'
+    header: 'AMOUNT',
+    accessorFn: (row) => {
+      return formatCurrency(row.amount);
+    }
   },
   {
     accessorKey: 'status',

@@ -3,6 +3,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { CellAction } from './cell-action';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Expense } from '@/constants/data';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 export const columns: ColumnDef<Expense>[] = [
   {
@@ -34,7 +35,10 @@ export const columns: ColumnDef<Expense>[] = [
   },
   {
     accessorKey: 'amount',
-    header: 'AMOUNT'
+    header: 'AMOUNT',
+    accessorFn: (row) => {
+      return formatCurrency(row.amount);
+    }
   },
   {
     accessorKey: 'category',

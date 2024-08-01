@@ -6,6 +6,7 @@ import { Heading } from '@/components/ui/heading';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 const SkeletonCard = () => (
   <article className="relative animate-pulse">
@@ -170,7 +171,7 @@ const ProductList = () => {
                           {product.quantityInStock} in stock{' '}
                         </span>
                         <p className="text-xs font-normal sm:text-sm md:text-base">
-                          ${product.price}
+                          {formatCurrency(product.price)}
                         </p>
                       </div>
                     </div>

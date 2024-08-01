@@ -4,7 +4,8 @@ import React, {
   useContext,
   useState,
   useEffect,
-  ReactNode
+  ReactNode,
+  useCallback
 } from 'react';
 
 type TimeFrame = '1w' | '2w' | '1m' | '3m';
@@ -21,6 +22,7 @@ interface ExpenseAnalyticsContextType {
   timeFrame: TimeFrame;
   setTimeFrame: (timeFrame: TimeFrame) => void;
   isLoading: boolean;
+  refreshExpenseData;
 }
 
 const ExpenseAnalyticsContext = createContext<
@@ -49,12 +51,9 @@ export const ExpenseAnalyticsProvider: React.FC<
   );
   const [timeFrame, setTimeFrame] = useState<TimeFrame>('1w');
   const [isLoading, setIsLoading] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  useEffect(() => {
-    fetchAnalytics();
-  }, [timeFrame]);
-
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     setIsLoading(true);
     const endDate = new Date();
     let startDate = new Date();
@@ -85,11 +84,25 @@ export const ExpenseAnalyticsProvider: React.FC<
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, [timeFrame, refreshTrigger, fetchAnalytics]);
+
+  const refreshExpenseData = useCallback(() => {
+    setRefreshTrigger((prev) => prev + 1);
+  }, []);
 
   return (
     <ExpenseAnalyticsContext.Provider
-      value={{ analyticsData, timeFrame, setTimeFrame, isLoading }}
+      value={{
+        analyticsData,
+        timeFrame,
+        setTimeFrame,
+        isLoading,
+        refreshExpenseData
+      }}
     >
       {children}
     </ExpenseAnalyticsContext.Provider>

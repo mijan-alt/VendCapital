@@ -1,5 +1,8 @@
 'use client';
-
+import { useState, useEffect } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -10,13 +13,16 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 import axios from 'axios';
-
+import { useExpenseAnalytics } from '@/app/context/ExpenseContext';
 const formSchema = z.object({
   description: z.string().min(1, 'Description is required'),
   amount: z
@@ -30,9 +36,25 @@ const formSchema = z.object({
 
 type ExpenseFormValue = z.infer<typeof formSchema>;
 
+const categories = [
+  'Cost of Goods Sold (COGS)',
+  'Administrative Expenses',
+  'Sales and Marketing',
+  'Research and Development (R&D)',
+  'Rent',
+  'Utilities',
+  'Salaries and Wages',
+  'Employee Benefits',
+  'Technology and IT',
+  'Facilities and Maintenance',
+  'Transportation and Travel',
+  'Financial Expenses',
+  'Miscellaneous Expenses'
+];
+
 export default function ExpenseForm() {
   const [loading, setLoading] = useState(false);
-
+  const { refreshExpenseData } = useExpenseAnalytics();
   const [expenses, setExpenses] = useState(null);
 
   const defaultValues = {
@@ -64,6 +86,7 @@ export default function ExpenseForm() {
           }
         });
         form.reset();
+        refreshExpenseData();
       } else {
         throw new Error('Failed to add expense');
       }
@@ -135,11 +158,21 @@ export default function ExpenseForm() {
               <FormItem>
                 <FormLabel>Category</FormLabel>
                 <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="Enter expense category..."
-                    {...field}
-                  />
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent className="scrollbar-thumb-rounded max-h-48 overflow-y-auto">
+                      {categories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>

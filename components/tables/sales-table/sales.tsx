@@ -10,6 +10,7 @@ import { columns } from './columns';
 import { Invoice } from '@/constants/data';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useCallback } from 'react';
 
 interface SalesProps {
   data: Invoice[];
@@ -24,7 +25,7 @@ export const Sales = () => {
   const [totalPage, setTotalPage] = useState(1);
   const [allSales, setAllSales] = useState<Invoice[] | null>([]);
 
-  const fetchSales = async () => {
+  const fetchSales = useCallback(async () => {
     try {
       setLoading(true);
       const res = await axios.get(
@@ -55,11 +56,11 @@ export const Sales = () => {
       console.error('error');
       setLoading(false);
     }
-  };
+  }, [page]);
 
   useEffect(() => {
     fetchSales();
-  }, []);
+  }, [fetchSales]);
 
   const nextPage = () => {
     console.log('hit nextpage');

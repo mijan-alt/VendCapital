@@ -4,7 +4,8 @@ import React, {
   useContext,
   useState,
   useEffect,
-  ReactNode
+  ReactNode,
+  useCallback
 } from 'react';
 
 type TimeFrame = '1w' | '2w' | '1m' | '3m';
@@ -32,6 +33,7 @@ interface SalesAnalyticsContextType {
   timeFrame: TimeFrame;
   setTimeFrame: (timeFrame: TimeFrame) => void;
   isLoading: boolean;
+  refreshSalesData;
 }
 
 const SalesAnalyticsContext = createContext<
@@ -60,12 +62,9 @@ export const SalesAnalyticsProvider: React.FC<SalesAnalyticsProviderProps> = ({
   );
   const [timeFrame, setTimeFrame] = useState<TimeFrame>('1w');
   const [isLoading, setIsLoading] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  useEffect(() => {
-    fetchAnalytics();
-  }, [timeFrame]);
-
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     setIsLoading(true);
     const endDate = new Date();
     let startDate = new Date();
@@ -96,11 +95,25 @@ export const SalesAnalyticsProvider: React.FC<SalesAnalyticsProviderProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, [timeFrame, refreshTrigger, fetchAnalytics]);
+
+  const refreshSalesData = useCallback(() => {
+    setRefreshTrigger((prev) => prev + 1);
+  }, []);
 
   return (
     <SalesAnalyticsContext.Provider
-      value={{ analyticsData, timeFrame, setTimeFrame, isLoading }}
+      value={{
+        analyticsData,
+        timeFrame,
+        setTimeFrame,
+        isLoading,
+        refreshSalesData
+      }}
     >
       {children}
     </SalesAnalyticsContext.Provider>

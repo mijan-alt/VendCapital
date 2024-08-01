@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/select';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 import axios from 'axios';
+import { useSalesAnalytics } from '@/app/context/SalesContext';
 
 type Sale = {
   customer: string;
@@ -64,6 +65,7 @@ export default function RecordSale() {
   const [products, setProducts] = useState<Product[]>([]);
   const [customerSearchTerm, setCustomerSearchTerm] = useState('');
   const [productSearchTerm, setProductSearchTerm] = useState('');
+  const { refreshSalesData } = useSalesAnalytics();
 
   const form = useForm<Sale>({
     resolver: zodResolver(formSchema),
@@ -137,6 +139,7 @@ export default function RecordSale() {
       if (response.status === 200) {
         enqueueSnackbar('Sale recorded successfully', { variant: 'success' });
         form.reset();
+        refreshSalesData();
       } else {
         enqueueSnackbar('Error recording sale', { variant: 'error' });
       }

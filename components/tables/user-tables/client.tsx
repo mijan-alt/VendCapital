@@ -1,6 +1,5 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { DataTable } from '@/components/ui/data-table';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { User } from '@/constants/data';
@@ -10,6 +9,7 @@ import { columns } from './columns';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
+import { DataTable } from './UserTable';
 
 export const UserClient = () => {
   const { data: session } = useSession();

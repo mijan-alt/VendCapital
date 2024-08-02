@@ -32,9 +32,9 @@ const Welcomeback = () => {
         <h2 className="text-3xl font-bold tracking-tight">
           {` Hi, Welcome back ${firstName}`}
         </h2>
-        <div className="hidden items-center space-x-2 md:flex">
+        {/* <div className="hidden items-center space-x-2 md:flex">
           <CalendarDateRangePicker />
-        </div>
+        </div> */}
       </div>
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>

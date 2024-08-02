@@ -29,41 +29,54 @@ export async function GET(req: NextRequest) {
     }
 
     const sales = await Sales.find(query)
-      .sort({ createdAt: 1 })
+      .sort({ createdAt: -1 })
+      .limit(5) // Limit to 5 most recent sales
       .populate('customer', 'name email');
 
-    const totalSales = sales.reduce((sum, sale) => sum + sale.totalPrice, 0);
+    const allSales = await Sales.find(query).sort({ createdAt: 1 });
 
-    // Calculate previous period for comparison
-    const currentPeriod = endDate ? new Date(endDate) : new Date();
-    const previousPeriodStart = new Date(currentPeriod);
-    previousPeriodStart.setDate(
-      previousPeriodStart.getDate() -
-        (startDate
-          ? (new Date(endDate).getTime() - new Date(startDate).getTime()) /
-            (1000 * 60 * 60 * 24)
-          : 30)
-    );
+    const totalSales = allSales.reduce((sum, sale) => sum + sale.totalPrice, 0);
+
+    // Calculate the duration of the current period
+    const currentPeriodEnd = endDate ? new Date(endDate) : new Date();
+    const currentPeriodStart = startDate
+      ? new Date(startDate)
+      : new Date(currentPeriodEnd);
+    currentPeriodStart.setDate(currentPeriodStart.getDate() - 30); // Default to 30 days if no start date
+
+    const periodDuration =
+      (currentPeriodEnd.getTime() - currentPeriodStart.getTime()) /
+      (1000 * 60 * 60 * 24);
+
+    // Calculate the previous period
+    const previousPeriodEnd = new Date(currentPeriodStart);
+    const previousPeriodStart = new Date(previousPeriodEnd);
+    previousPeriodStart.setDate(previousPeriodStart.getDate() - periodDuration);
 
     const previousPeriodQuery: any = {
       createdBy: session.user.id,
       createdAt: {
         $gte: previousPeriodStart,
-        $lt: startDate ? new Date(startDate) : currentPeriod
+        $lt: previousPeriodEnd
       }
     };
 
+    // Fetch sales for the previous period
     const previousPeriodSales = await Sales.find(previousPeriodQuery);
 
+    // Calculate total sales for the previous period
     const previousTotalSales = previousPeriodSales.reduce(
       (sum, sale) => sum + sale.totalPrice,
       0
     );
 
+    // Calculate percentage change
     const percentageChange =
       previousTotalSales !== 0
         ? ((totalSales - previousTotalSales) / previousTotalSales) * 100
-        : 100;
+        : totalSales > 0
+        ? 100
+        : 0;
 
     // Group sales by date for the chart
     const salesByDate = sales.reduce(
@@ -81,7 +94,7 @@ export async function GET(req: NextRequest) {
     }));
 
     // Get recent sales
-    const recentSales = sales.slice(0, 5).map((sale) => ({
+    const recentSales = sales.map((sale) => ({
       _id: sale._id,
       customer: {
         name: sale.customer.name,
@@ -90,7 +103,6 @@ export async function GET(req: NextRequest) {
       totalPrice: sale.totalPrice,
       createdAt: sale.createdAt
     }));
-
     return NextResponse.json(
       {
         totalSales,

@@ -3,6 +3,7 @@ import React from 'react';
 import { AreaGraph } from '@/components/charts/area-graph';
 import { BarGraph } from '@/components/charts/bar-graph';
 import { PieGraph } from '@/components/charts/pie-graph';
+import { LineGraph } from './charts/line-graph';
 import { CalendarDateRangePicker } from '@/components/date-range-picker';
 import { Overview } from '@/components/overview';
 import { RecentSales } from '@/components/recent-sales';
@@ -55,11 +56,11 @@ const Welcomeback = () => {
             <RecentSalesCard />
 
             <div className="col-span-4">
-              <AreaGraph />
+              <LineGraph />
             </div>
-            <div className="col-span-4 md:col-span-3">
+            {/* <div className="col-span-4 md:col-span-3">
               <PieGraph />
-            </div>
+            </div> */}
           </div>
         </TabsContent>
       </Tabs>

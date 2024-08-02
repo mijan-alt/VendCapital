@@ -79,7 +79,7 @@ export async function GET(req: NextRequest) {
         : 0;
 
     // Group sales by date for the chart
-    const salesByDate = sales.reduce(
+    const salesByDate = allSales.reduce(
       (acc, sale) => {
         const date = sale.createdAt.toISOString().split('T')[0];
         acc[date] = (acc[date] || 0) + sale.totalPrice;

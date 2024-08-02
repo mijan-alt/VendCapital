@@ -50,7 +50,18 @@ export const columns: ColumnDef<Invoice>[] = [
   },
   {
     accessorKey: 'status',
-    header: 'STATUS'
+    header: 'STATUS',
+    cell: ({ row }) => (
+      <span
+        className={
+          row.original.status === 'paid'
+            ? 'rounded-lg bg-green-500 p-1 text-white'
+            : 'rounded-lg bg-yellow-500 p-2 text-white'
+        }
+      >
+        {row.original.status}
+      </span>
+    )
   },
   {
     accessorKey: 'product',

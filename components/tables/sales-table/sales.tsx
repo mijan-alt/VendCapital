@@ -24,12 +24,13 @@ export const Sales = () => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [allSales, setAllSales] = useState<Invoice[] | null>([]);
+  const [statusFilter, setStatusFilter] = useState('paid');
 
   const fetchSales = useCallback(async () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `/api/sales/paginated?page=${page}&perPage=${perPage}`
+        `/api/sales/paginated?page=${page}&perPage=${perPage}&statusFilter=${statusFilter}`
       );
       if (res.status === 200) {
         console.log('response data', res.data);
@@ -56,7 +57,7 @@ export const Sales = () => {
       console.error('error');
       setLoading(false);
     }
-  }, [page]);
+  }, [page, statusFilter]);
 
   useEffect(() => {
     fetchSales();
@@ -97,6 +98,8 @@ export const Sales = () => {
         count={count}
         page={page}
         loading={loading}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
       />
     </>
   );

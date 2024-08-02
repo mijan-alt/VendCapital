@@ -24,7 +24,7 @@ export const Sales = () => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [allSales, setAllSales] = useState<Invoice[] | null>([]);
-  const [statusFilter, setStatusFilter] = useState('paid');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   const fetchSales = useCallback(async () => {
     try {
@@ -89,7 +89,7 @@ export const Sales = () => {
       </div>
       <Separator />
       <DataTable
-        searchKey="name"
+        searchKey="status"
         columns={columns}
         data={allSales}
         previousPage={previousPage}

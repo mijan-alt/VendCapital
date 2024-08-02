@@ -28,7 +28,7 @@ const formSchema = z.object({
 
 type UserFormValue = z.infer<typeof formSchema>;
 
-const baseUrl = process.env.AUTH_URL;
+const baseUrl = process.env.NEXT_PUBLIC_AUTH_URL;
 
 export default function LoginForm() {
   const router = useRouter();

@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    AUTH_URL: process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:3000'
+    NEXT_PUBLIC_AUTH_URL:
+      process.env.NEXT_PUBLIC_AUTH_URL ||
+      (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : 'http://localhost:3000')
   },
   experimental: {
     esmExternals: 'loose', // <-- add this

@@ -23,7 +23,8 @@ export const POST = async (request: Request) => {
       email,
       password: hashedPassword,
       username,
-      role: email === process.env.ADMIN_EMAIL ? 'Super Admin' : 'user'
+      role:
+        email === process.env.ADMIN_EMAIL ? 'Super Admin' : 'Business Manager'
     });
 
     console.log(newUser);

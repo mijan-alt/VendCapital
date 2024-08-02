@@ -63,7 +63,6 @@ export default function EditUserRole() {
             onChange={handleRoleChange}
             className="mb-4 w-full rounded-lg border px-3 py-2 text-sm text-muted-foreground"
           >
-            <option value="user">User</option>
             <option value="Admin">Admin</option>
             <option value="Business Manager">Business Manager</option>
             <option value="Super Admin">Super Admin</option>

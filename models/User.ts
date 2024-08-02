@@ -12,7 +12,7 @@ interface IUser extends Document {
   role?: string;
   firstName?: string;
   lastName?: string;
-  business?: mongoose.Types.ObjectId | IBusiness;
+  business?: mongoose.Types.ObjectId;
   customers?: mongoose.Types.ObjectId[] | ICustomer[];
   expenses?: mongoose.Types.ObjectId[] | IExpense[];
 }

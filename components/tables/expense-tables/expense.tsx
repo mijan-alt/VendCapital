@@ -1,6 +1,5 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { DataTable } from '@/components/ui/data-table';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { Plus } from 'lucide-react';
@@ -9,6 +8,7 @@ import { columns } from './columns';
 import { Expense } from '@/constants/data';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { DataTable } from './ExpenseTable';
 
 export const ExpenseClient = () => {
   const router = useRouter();

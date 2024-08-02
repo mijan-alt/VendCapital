@@ -1,6 +1,6 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { DataTable } from '@/components/ui/data-table';
+
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { Customer } from '@/constants/data';
@@ -10,6 +10,7 @@ import { columns } from './columns';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Actions } from '@/constants/data';
+import { DataTable } from './CustomerTable';
 
 // interface CustomerClientProps {
 //   data: Customer[];

@@ -1,6 +1,5 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { DataTable } from '@/components/ui/data-table';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { invoices } from '@/constants/data';
@@ -11,6 +10,7 @@ import { Invoice } from '@/constants/data';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useCallback } from 'react';
+import { DataTable } from './SalesTable';
 
 interface SalesProps {
   data: Invoice[];

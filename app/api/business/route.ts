@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     const savedBusiness = await newBusiness.save();
 
     // Update the user document to include the new business
-    await User.findByIdAndUpdate(
+    await User.findOneAndUpdate(
       { _id: session.user.id },
       { $set: { business: savedBusiness._id } },
       { new: true }
